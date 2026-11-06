@@ -17,6 +17,7 @@ import os
 from pathlib import Path
 import re
 import secrets
+import sqlite3
 import subprocess
 import sys
 import threading
@@ -36,6 +37,7 @@ PORT = 8769
 AUTH = HOME / 'password.json'
 DRAFTS = HOME / 'drafts'
 IMAGES = HOME / 'images'
+SESSION_FILE = HOME / 'sessions.sqlite3'
 SLUG = re.compile(r'^[a-z0-9]+(?:-[a-z0-9]+)*$')
 S = {}
 FAIL = []
@@ -48,6 +50,45 @@ def mkdir():
     for path in (HOME, DRAFTS, IMAGES):
         path.mkdir(parents=True, exist_ok=True, mode=0o700)
         os.chmod(str(path), 0o700)
+
+
+def auth_revision():
+    # A password change invalidates all surviving sessions, including saved ones.
+    try:return hashlib.sha256(AUTH.read_bytes()).hexdigest()
+    except OSError:return ''
+
+
+def session_database():
+    mkdir()
+    with LOCK:
+        with sqlite3.connect(str(SESSION_FILE),timeout=5) as conn:
+            conn.execute('CREATE TABLE IF NOT EXISTS sessions (token_hash TEXT PRIMARY KEY,csrf TEXT NOT NULL,expires REAL NOT NULL,auth_revision TEXT NOT NULL)')
+            conn.execute('DELETE FROM sessions WHERE expires < ?', (time.time(),))
+            conn.commit()
+    os.chmod(str(SESSION_FILE),0o600)
+
+
+def remember_session(key,session):
+    session_database()
+    with sqlite3.connect(str(SESSION_FILE),timeout=5) as conn:
+        conn.execute('INSERT OR REPLACE INTO sessions (token_hash,csrf,expires,auth_revision) VALUES (?,?,?,?)',
+             (key,session['csrf'],session['expires'],session['auth_revision']))
+        conn.commit()
+
+
+def forget_session(key):
+    with LOCK:S.pop(key,None)
+    if SESSION_FILE.exists():
+        with sqlite3.connect(str(SESSION_FILE),timeout=5) as conn:
+            conn.execute('DELETE FROM sessions WHERE token_hash=?',(key,));conn.commit()
+
+
+def stored_session(key):
+    if not SESSION_FILE.exists():return None
+    with sqlite3.connect(str(SESSION_FILE),timeout=5) as conn:
+        row=conn.execute('SELECT csrf,expires,auth_revision FROM sessions WHERE token_hash=?',(key,)).fetchone()
+    if not row:return None
+    return {'csrf':row[0],'expires':row[1],'auth_revision':row[2]}
 
 
 def safe_slug(s):
@@ -187,7 +228,9 @@ def publish_slug(slug):
         d = json.loads((DRAFTS/(slug+'.json')).read_text())
         if d.get('slug') != slug: raise ValueError('Draft mismatch')
         if 'EDITORIAL WORKING DRAFT' in d.get('body','') or 'VERIFY BEFORE PUBLISHING' in d.get('body',''):
-            raise ValueError('Editorial working draft cannot be published. Verify and replace draft warnings first.')
+            raise ValueError('Legacy working-draft warnings must be removed after factual review.')
+        if d.get('review_required') is True and d.get('review_confirmed') is not True:
+            raise ValueError('Verify the private source checklist and approve the AI draft before publishing.')
         mod = publisher()
         mod.verify_repo()
         # Prepare and validate content BEFORE writing a public image.
@@ -229,14 +272,14 @@ PAGE = r'''<!doctype html><html lang="en"><head><meta charset="utf-8">
 header{background:#0a1c32;border-bottom:1px solid var(--line);padding:16px max(24px,calc((100vw - 1300px)/2))}header strong{font-size:20px}.top{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}header small{color:var(--muted)}main{max-width:1340px;margin:24px auto;padding:0 20px;display:grid;grid-template-columns:220px minmax(0,1fr) 280px;gap:22px}.panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px}h2{margin:0 0 18px;font-size:19px}label{display:block;color:#d6e6f3;font-weight:650;margin:12px 0 5px;font-size:13px}input,textarea,select{width:100%;background:#091a30;border:1px solid #365777;border-radius:9px;color:var(--fg);padding:10px}input:focus,textarea:focus{outline:2px solid var(--a)}textarea{min-height:350px;resize:vertical;font-family:ui-monospace,monospace;font-size:14px;line-height:1.7}#title{font-size:22px;font-weight:700}#summary{min-height:85px}.muted,small{color:var(--muted)}.toolbar{display:flex;gap:5px;flex-wrap:wrap;margin:10px 0}.toolbar button{padding:5px 10px}.buttons{display:flex;gap:10px;flex-wrap:wrap;margin-top:17px}.publish{background:#197354;border-color:#2f9e77}.draft{padding:10px;margin:8px 0;border-radius:8px;border:1px solid var(--line);cursor:pointer;overflow-wrap:anywhere}.draft:hover{border-color:var(--a)}#preview{background:#f9fbfe;color:#1b2c3d;min-height:350px;padding:25px;border-radius:9px;overflow:auto;display:none}#preview a{color:#17658f}#preview img{max-width:100%}.notice{color:#e8dba6;font-size:13px}.ok{color:#7cddb7}.err{color:#ffadb1}#imgpreview{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:8px;display:none}.stack{display:flex;flex-direction:column;gap:8px}.count{font-size:12px;color:var(--muted);text-align:right}a{color:#70e4ef}@media(max-width:1050px){main{grid-template-columns:1fr}.side{order:3}}@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
 </style></head><body><header><div class="top"><div><strong>DigiByte Wallet · Private Newsroom</strong><br><small>SSH tunnel + password · drafts stay on server · GitHub-first publishing</small></div><a href="http://127.0.0.1:8878/" target="_blank" rel="noopener noreferrer" style="margin-right:16px">Story Radar ↗</a><button id="logout">Sign out</button></div></header><main>
 <aside class="panel side"><h2>Private drafts</h2><button id="new">+ New article</button><div id="drafts"></div><p class="notice">Unpublished drafts and original images never enter the public repository.</p></aside>
-<section class="panel"><label>Headline</label><input id="title" maxlength="155" placeholder="A clear, factual headline"><label>Article address (slug)</label><input id="slug" maxlength="85" placeholder="a-descriptive-article-title"><label>SEO summary</label><textarea id="summary" maxlength="360" style="min-height:85px" placeholder="A concise, factual description (45–360 characters)"></textarea><div class="count" id="summarycount"></div><label>Article text</label><div class="toolbar"><button data-md="bold" type="button">Bold</button><button data-md="h2" type="button">Heading</button><button data-md="h3" type="button">Subheading</button><button data-md="list" type="button">List</button><button data-md="link" type="button">Link</button><button id="togglepreview" type="button">Preview</button></div><textarea id="body" placeholder="Write your story here. You can use the toolbar for headings, emphasis, links, and lists."></textarea><div id="preview"></div><div class="buttons"><button id="save">Save draft</button><button class="publish" id="publish">Publish to website</button></div><p id="status" role="status" aria-live="polite"></p></section>
+<section class="panel"><label>Headline</label><input id="title" maxlength="155" placeholder="A clear, factual headline"><label>Article address (slug)</label><input id="slug" maxlength="85" placeholder="a-descriptive-article-title"><label>SEO summary</label><textarea id="summary" maxlength="360" style="min-height:85px" placeholder="A concise, factual description (45–360 characters)"></textarea><div class="count" id="summarycount"></div><label>Article text</label><div class="toolbar"><button data-md="bold" type="button">Bold</button><button data-md="h2" type="button">Heading</button><button data-md="h3" type="button">Subheading</button><button data-md="list" type="button">List</button><button data-md="link" type="button">Link</button><button id="togglepreview" type="button">Preview</button></div><textarea id="body" placeholder="Write your story here. You can use the toolbar for headings, emphasis, links, and lists."></textarea><div id="preview"></div><div id="reviewpanel" class="panel" style="display:none;margin-top:14px;background:#112b3e"><strong>Private source verification</strong><p class="notice">These notes are private and are never added to the published article.</p><ul id="reviewnotes" style="font-size:13px;padding-left:20px"></ul><label style="display:flex;gap:10px;align-items:center"><input id="reviewchecked" type="checkbox" style="width:auto">I have checked the claims, links, release status and artwork.</label></div><div class="buttons"><button id="save">Save draft</button><button class="publish" id="publish">Publish to website</button></div><p id="status" role="status" aria-live="polite"></p></section>
 <aside class="panel side"><h2>Search presentation</h2><p class="muted">Each article receives NewsArticle + breadcrumb data, canonical URL, accurate first-published timestamp, social metadata and sitemap entries.</p><label>Category</label><select id="category"><option>Development update</option><option>Security</option><option>Release</option><option>Education</option><option>Project news</option></select><label>Tags (comma separated)</label><input id="tags" value="DigiByte, DGB, DigiByte Wallet"><label>Featured image · JPEG, PNG, WebP</label><input id="image" type="file" accept="image/jpeg,image/png,image/webp"><img id="imgpreview" alt="Featured image crop preview"><p class="notice">Upload an original, relevant image at least 1600 × 1200px (max 8 MB). We generate 16:9, 4:3 and square crops for Google. Generic logos/text-heavy images are discouraged.</p><label>Horizontal focal point</label><input id="focus_x" type="range" min="0" max="100" value="50"><label>Vertical focal point</label><input id="focus_y" type="range" min="0" max="100" value="50"><label>Image alternative text</label><input id="image_alt" maxlength="180" placeholder="Describe what is visible in the picture"><div class="buttons"><button id="check">Check article</button></div><p class="notice">Release status must be verified. Publishing cannot guarantee search rankings, rich results, Google News or Discover placement.</p></aside>
 </main><script>
-const $=id=>document.getElementById(id), fields=['title','slug','summary','category','tags','body','image_alt','focus_x','focus_y'];let slugLocked=false;let preview=false;let csrf='';let imageData=null;let hasServerImage=false;
+const $=id=>document.getElementById(id), fields=['title','slug','summary','category','tags','body','image_alt','focus_x','focus_y'];let slugLocked=false;let preview=false;let csrf='';let imageData=null;let hasServerImage=false;let reviewRequired=false;let reviewVerification=[];
 async function api(path,body){let r=await fetch(path,{method:body?'POST':'GET',headers:body?{'Content-Type':'application/json','X-CSRF-Token':csrf}:{},body:body?JSON.stringify(body):undefined,credentials:'same-origin'});let x=await r.json();if(r.status===401){location.href='/login';throw Error('Session expired')}if(!r.ok)throw Error(x.error||'Request failed');return x}
 function announce(s,err=false){$('status').textContent=s;$('status').className=err?'err':'ok'}
-function data(){let o={};for(let key of fields)o[key]=$(key).value.trim();return o}
-function apply(d){for(let key of fields)$(key).value=d[key]||((key==='focus_x'||key==='focus_y')?'50':'');$('slug').dataset.original=d.slug||'';slugLocked=!!d.slug;hasServerImage=!!d.has_image;imageData=null;$('image').value='';$('imgpreview').style.display='none';preview=false;$('preview').style.display='none';$('body').style.display='block';$('togglepreview').textContent='Preview';announce('Draft loaded')}
+function data(){let o={};for(let key of fields)o[key]=$(key).value.trim();o.review_required=reviewRequired;o.review_confirmed=reviewRequired?$('reviewchecked').checked:false;o.verification=reviewVerification;return o}
+function apply(d){for(let key of fields)$(key).value=d[key]||((key==='focus_x'||key==='focus_y')?'50':'');$('slug').dataset.original=d.slug||'';slugLocked=!!d.slug;hasServerImage=!!d.has_image;imageData=null;$('image').value='';$('imgpreview').style.display='none';preview=false;$('preview').style.display='none';$('body').style.display='block';$('togglepreview').textContent='Preview';reviewRequired=d.review_required===true;reviewVerification=Array.isArray(d.verification)?d.verification:[];$('reviewpanel').style.display=reviewRequired?'block':'none';$('reviewchecked').checked=reviewRequired&&d.review_confirmed===true;const details=$('reviewnotes');details.replaceChildren();reviewVerification.forEach(v=>{const li=document.createElement('li');li.textContent=v;details.append(li)});announce('Draft loaded')}
 async function list(){let x=await api('/api/drafts');$('drafts').replaceChildren();for(let d of x.drafts){let b=document.createElement('div');b.className='draft';b.textContent=d.title||d.slug;b.onclick=async()=>{try{let v=await api('/api/draft/'+encodeURIComponent(d.slug));apply(v.draft)}catch(e){announce(e.message,true)}};$('drafts').append(b)}}
 function slugify(s){return s.toLowerCase().normalize('NFKD').replace(/[^a-z0-9 ]/g,'').trim().replace(/\s+/g,'-').slice(0,85).replace(/-+$/,'')}
 $('title').oninput=()=>{if(!slugLocked)$('slug').value=slugify($('title').value)};$('slug').oninput=()=>{slugLocked=true};$('summary').oninput=()=>$('summarycount').textContent=$('summary').value.length+'/360';
@@ -269,7 +312,7 @@ window.addEventListener('message',event=>{
     announce('Import skipped to protect your existing work. Open a fresh Article Editor tab from Story Radar and resend.',true);
   }
   if(accepted){
-    apply({title:d.title,slug:d.slug,summary:d.summary,body:d.body,category:d.category||'Development update',tags:d.tags||'DigiByte, DGB, DigiByte Wallet',image_alt:d.image_alt||'',focus_x:'50',focus_y:'50'});
+    apply({title:d.title,slug:d.slug,summary:d.summary,body:d.body,category:d.category||'Development update',tags:d.tags||'DigiByte, DGB, DigiByte Wallet',image_alt:d.image_alt||'',focus_x:'50',focus_y:'50',review_required:d.review_required===true||d.ai_generated===true,review_confirmed:false,verification:d.verification||[]});
     // Import only private, editor-validated, original PNG artwork from Story Radar.
     // The normal Save route revalidates actual bytes, dimensions and metadata.
     if(typeof d.image_data==='string' &&
@@ -332,9 +375,12 @@ class Handler(BaseHTTPRequestHandler):
         if not m:return None
         h=hashlib.sha256(m.group(1).encode()).hexdigest()
         with LOCK:
-            session=S.get(h)
+            session=S.get(h) or stored_session(h)
             if not session:return None
-            if session['expires']<time.time():S.pop(h,None);return None
+            if session['expires']<time.time() or session.get('auth_revision') != auth_revision():
+                forget_session(h)
+                return None
+            S[h]=session
             return session
     def auth(self,mutate=False):
         ses=self.current_session()
@@ -414,7 +460,10 @@ class Handler(BaseHTTPRequestHandler):
                         return self.send(401,'Invalid password','text/plain')
                     FAIL.clear()
                     token=secrets.token_hex(32)
-                    S[hashlib.sha256(token.encode()).hexdigest()]={'csrf':secrets.token_hex(24),'expires':time.time()+8*3600}
+                    session={'csrf':secrets.token_hex(24),'expires':time.time()+8*3600,'auth_revision':auth_revision()}
+                    token_hash=hashlib.sha256(token.encode()).hexdigest()
+                    S[token_hash]=session
+                    remember_session(token_hash,session)
                 self.send_response(303)
                 self.headers_secure('text/plain')
                 self.send_header('Location','/')
@@ -427,7 +476,7 @@ class Handler(BaseHTTPRequestHandler):
             if path=='/api/logout':
                 m=re.search(r'dgb_session=([0-9a-f]{64})',self.headers.get('Cookie',''))
                 if m:
-                    with LOCK:S.pop(hashlib.sha256(m.group(1).encode()).hexdigest(),None)
+                    forget_session(hashlib.sha256(m.group(1).encode()).hexdigest())
                 return self.send(200,{'ok':True},cookie='dgb_session=; HttpOnly; SameSite=Strict; Path=/; Max-Age=0')
             if path=='/api/preview':
                 body=v.get('body','')
@@ -447,7 +496,13 @@ class Handler(BaseHTTPRequestHandler):
                 if (LIVE/'news'/(slug+'.html')).exists():raise ValueError('This article URL is already published')
                 if len(json.dumps(v))>MAX_BODY:raise ValueError('Draft too large')
                 original_image=v.pop('image_data',None)
-                # Validate all textual fields before saving.
+                # Validate all textual fields and private editorial metadata before saving.
+                for flag in ('review_required','review_confirmed'):
+                    if flag in v and type(v[flag]) is not bool:
+                        raise ValueError('Invalid private review status')
+                checks=v.get('verification',[])
+                if not isinstance(checks,list) or len(checks)>12 or not all(isinstance(item,str) and len(item)<300 for item in checks):
+                    raise ValueError('Invalid private verification checklist')
                 markdown_source(v)
                 if original_image is not None:
                     if not isinstance(original_image,str) or not re.match(r'^data:image/(jpeg|png|webp);base64,',original_image):raise ValueError('Invalid image data')
