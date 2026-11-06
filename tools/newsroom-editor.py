@@ -269,8 +269,19 @@ window.addEventListener('message',event=>{
     announce('Import skipped to protect your existing work. Open a fresh Article Editor tab from Story Radar and resend.',true);
   }
   if(accepted){
-    apply({title:d.title,slug:d.slug,summary:d.summary,body:d.body,category:d.category||'Development update',tags:d.tags||'DigiByte, DGB, DigiByte Wallet',image_alt:'',focus_x:'50',focus_y:'50'});
-    announce('Working draft imported. Verify the sources, edit the text, add an original image and click Save draft.');
+    apply({title:d.title,slug:d.slug,summary:d.summary,body:d.body,category:d.category||'Development update',tags:d.tags||'DigiByte, DGB, DigiByte Wallet',image_alt:d.image_alt||'',focus_x:'50',focus_y:'50'});
+    // Import only private, editor-validated, original PNG artwork from Story Radar.
+    // The normal Save route revalidates actual bytes, dimensions and metadata.
+    if(typeof d.image_data==='string' &&
+       d.image_data.startsWith('data:image/png;base64,') &&
+       d.image_data.length<=4*1024*1024){
+      imageData=d.image_data;
+      hasServerImage=true;
+      $('imgpreview').src=imageData;
+      $('imgpreview').style.display='block';
+      focusPreview();
+    }
+    announce('Working draft and original artwork imported. Verify claims and image, then Save draft.');
   }
   dgbImportedTickets.set(msg.ticket,accepted);
   if(event.source)event.source.postMessage({type:'dgb_editor_imported',ticket:msg.ticket,accepted:accepted},event.origin);
