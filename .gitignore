@@ -49,3 +49,12 @@
 **/*password*
 **/*private*
 **/*backup*
+
+# Reviewed Google News source, generated initial sitemap, and schedule.
+!/news-sitemap.xml
+!/tools/
+/tools/*
+!/tools/digibyte-news-readiness.py
+!/ops/
+/ops/*
+!/ops/digibyte-news-sitemap.cron

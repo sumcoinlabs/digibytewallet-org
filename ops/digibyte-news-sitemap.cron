@@ -1,0 +1,2 @@
+# DGB_NEWS_MANAGER_V1 | Refresh Google News sitemap every 15 minutes
+*/15 * * * * root /usr/bin/python3 /usr/local/sbin/digibyte-news-readiness.py --refresh 2>&1 | /usr/bin/logger -t digibyte-news-sitemap
