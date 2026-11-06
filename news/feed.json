@@ -7,6 +7,23 @@
   "language": "en",
   "items": [
     {
+      "id": "https://www.digibytewallet.org/news/digibyte-wallet-256-bit-recovery-security-updates.html",
+      "url": "https://www.digibytewallet.org/news/digibyte-wallet-256-bit-recovery-security-updates.html",
+      "title": "DigiByte Wallet Highlights 256-Bit Recovery as 0.1.5 Security Work Advances",
+      "summary": "DigiByte Wallet's new-wallet setup uses 256-bit BIP39 entropy and a 24-word recovery phrase. Recent development work also strengthens iOS Keychain reliability, certificate validation, and app usability ahead of version 0.1.5.",
+      "date_published": "2026-11-06T02:03:29Z",
+      "tags": [
+        "DigiByte",
+        "DGB",
+        "Self-custody",
+        "Wallet security",
+        "256-bit entropy",
+        "BIP39",
+        "DigiByte Wallet"
+      ],
+      "image": "https://www.digibytewallet.org/news/assets/newsroom-social-v33.jpg"
+    },
+    {
       "id": "https://www.digibytewallet.org/news/digicoinlib-0-0-3-release.html",
       "url": "https://www.digibytewallet.org/news/digicoinlib-0-0-3-release.html",
       "title": "DigiCoinLib 0.0.3: A stronger foundation for DigiByte Wallet",

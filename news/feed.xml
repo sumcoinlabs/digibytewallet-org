@@ -1,10 +1,10 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version='1.0' encoding='UTF-8'?>
 <rss version="2.0"><channel>
 <title>DigiByte Wallet News</title>
 <link>https://www.digibytewallet.org/news/</link>
 <description>DigiByte Wallet releases and development news</description>
 <language>en-us</language>
-<item><title>DigiCoinLib 0.0.3: A stronger foundation for DigiByte Wallet</title>
+<item><title>DigiByte Wallet Highlights 256-Bit Recovery as 0.1.5 Security Work Advances</title><link>https://www.digibytewallet.org/news/digibyte-wallet-256-bit-recovery-security-updates.html</link><guid isPermaLink="true">https://www.digibytewallet.org/news/digibyte-wallet-256-bit-recovery-security-updates.html</guid><description>DigiByte Wallet's new-wallet setup uses 256-bit BIP39 entropy and a 24-word recovery phrase. Recent development work also strengthens iOS Keychain reliability, certificate validation, and app usability ahead of version 0.1.5.</description><pubDate>Fri, 06 Nov 2026 02:03:29 GMT</pubDate><enclosure url="https://www.digibytewallet.org/news/assets/newsroom-social-v33.jpg" length="125856" type="image/jpeg" /></item><item><title>DigiCoinLib 0.0.3: A stronger foundation for DigiByte Wallet</title>
 <link>https://www.digibytewallet.org/news/digicoinlib-0-0-3-release.html</link>
 <guid isPermaLink="true">https://www.digibytewallet.org/news/digicoinlib-0-0-3-release.html</guid>
 <description>A new open-source DigiByte library update improves compatibility with modern Android tooling, corrects test-network handling and strengthens automated tests while preserving standard mainnet wallet behavior.</description>
