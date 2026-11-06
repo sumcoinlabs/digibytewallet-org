@@ -28,7 +28,7 @@ SITEMAP_NS = 'http://www.sitemaps.org/schemas/sitemap/0.9'
 ET.register_namespace('', SITEMAP_NS)
 MARKER = 'DGB_NEWS_PUBLISHER_V1'
 DEFAULT_IMAGE = '/news/assets/newsroom-social-v33.jpg'
-ALLOWED_FIELDS = {'title','slug','summary','category','image','image_alt','tags','published'}
+ALLOWED_FIELDS = {'title','slug','summary','category','image','image_square','image_4x3','image_alt','tags','published'}
 
 
 def fail(message):
@@ -113,6 +113,16 @@ def parse_manuscript(raw):
     if image_repo.read_bytes() != image_live.read_bytes():
         fail('Image differs between source and production; review before publishing')
     meta['image'] = image
+    for variant in ('image_square', 'image_4x3'):
+        if variant not in meta:
+            continue
+        value = meta[variant]
+        if not re.fullmatch(r'/news/assets/[A-Za-z0-9][A-Za-z0-9._-]*\.(?:jpg|jpeg|png|webp)', value):
+            fail('Invalid alternate image path: ' + variant)
+        source = ROOT / value.lstrip('/')
+        public = LIVE / value.lstrip('/')
+        if not source.is_file() or not public.is_file() or source.read_bytes() != public.read_bytes():
+            fail('Alternate image must exist and match on GitHub source and live site: ' + variant)
     meta['image_alt'] = meta.get('image_alt') or meta['title']
     meta['category'] = meta.get('category') or 'Development update'
     if any(len(str(meta[k])) > 180 for k in ('image_alt','category')):
@@ -218,7 +228,7 @@ def html_tags(meta, markup):
              'mainEntityOfPage': {'@type': 'WebPage', '@id': canonical},
              'headline': title, 'description': meta['summary'],
              'datePublished': meta['published'], 'dateModified': meta['published'],
-             'image': [full_image], 'inLanguage': 'en',
+             'image': [BASE + meta[k] for k in ('image_square', 'image_4x3', 'image') if meta.get(k)], 'inLanguage': 'en',
              'author': {'@type': 'Organization', 'name': 'DigiByte Wallet',
                         'url': BASE + '/news/about.html'},
              'publisher': {'@id': BASE + '/#organization'}}]
@@ -449,7 +459,9 @@ def generator_refresh(source_root, installed=False):
 def publish(raw):
     verify_repo()
     meta, body = parse_manuscript(raw)
-    git('ls-files', '--error-unmatch', '--', meta['image'].lstrip('/'))
+    for image_key in ('image', 'image_square', 'image_4x3'):
+        if meta.get(image_key):
+            git('ls-files', '--error-unmatch', '--', meta[image_key].lstrip('/'))
     slug = meta['slug']
     page_path = f'news/{slug}.html'
     source_path = f'news/content/{slug}.md'

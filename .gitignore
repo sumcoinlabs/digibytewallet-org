@@ -62,3 +62,8 @@
 # Reviewed Markdown newsroom publishing workflow; faucet remains excluded.
 !/tools/news-publisher.py
 !/tools/NEWS_PUBLISHING.md
+
+# Loopback-only reviewed private newsroom editor. Source is public; passwords and drafts are NEVER committed.
+!/tools/newsroom-editor.py
+!/tools/install-newsroom-editor.sh
+!/tools/NEWSROOM_EDITOR.md
