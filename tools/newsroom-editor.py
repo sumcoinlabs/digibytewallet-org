@@ -263,7 +263,7 @@ class Handler(BaseHTTPRequestHandler):
         self.send_header('Cache-Control','no-store, max-age=0')
         self.send_header('X-Content-Type-Options','nosniff')
         self.send_header('X-Frame-Options','DENY')
-        self.send_header('Referrer-Policy','no-referrer')
+        self.send_header('Referrer-Policy','same-origin')
         self.send_header('Cross-Origin-Resource-Policy','same-origin')
         self.send_header('Content-Security-Policy',"default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; form-action 'self'; frame-ancestors 'none'; base-uri 'none'")
     def send(self,status,obj,typ='application/json; charset=utf-8',cookie=None):
