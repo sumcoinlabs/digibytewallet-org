@@ -1,0 +1,36 @@
+{
+  "version": "https://jsonfeed.org/version/1.1",
+  "title": "DigiByte Wallet News",
+  "home_page_url": "https://www.digibytewallet.org/news/",
+  "feed_url": "https://www.digibytewallet.org/news/feed.json",
+  "description": "DigiByte Wallet releases and development news",
+  "language": "en",
+  "items": [
+    {
+      "id": "https://www.digibytewallet.org/news/digicoinlib-0-0-3-release.html",
+      "url": "https://www.digibytewallet.org/news/digicoinlib-0-0-3-release.html",
+      "title": "DigiCoinLib 0.0.3: A stronger foundation for DigiByte Wallet",
+      "summary": "A new open-source DigiByte library update improves compatibility with modern Android tooling, corrects test-network handling and strengthens automated tests while preserving standard mainnet wallet behavior.",
+      "date_published": "2026-11-05T00:00:00Z",
+      "tags": [
+        "DigiByte",
+        "DigiByte Wallet",
+        "Open-source release"
+      ],
+      "image": "https://www.digibytewallet.org/news/assets/digicoinlib-0-0-3-social-v33.jpg"
+    },
+    {
+      "id": "https://www.digibytewallet.org/news/wallet-0-1-5-preview.html",
+      "url": "https://www.digibytewallet.org/news/wallet-0-1-5-preview.html",
+      "title": "DigiByte Wallet 0.1.5 is coming soon: What to expect",
+      "summary": "A preview of DigiByte Wallet 0.1.5: refreshed security dependencies, iPhone keychain and startup reliability improvements, more accessible text layouts and less disruptive ad placement.",
+      "date_published": "2026-11-05T00:00:00Z",
+      "tags": [
+        "DigiByte",
+        "DigiByte Wallet",
+        "Wallet preview"
+      ],
+      "image": "https://www.digibytewallet.org/news/assets/wallet-0-1-5-social-v33.jpg"
+    }
+  ]
+}

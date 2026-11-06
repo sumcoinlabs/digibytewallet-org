@@ -1,0 +1,183 @@
+/* DigiByte Wallet newsroom — uses the original site's logo and blue theme. */
+:root{--dw-deep:#06172e;--dw-navy:#092e54;--dw-blue:#1169d5;--dw-aqua:#48d5fd;--dw-text:#112c45;--dw-muted:#546981;--dw-line:#dce6f2;--dw-surface:#f3f7fc;--dw-white:#fff}
+.dw-news,.dw-news *{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body.dw-news{background:var(--dw-surface);color:var(--dw-text);font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-weight:400;line-height:1.64;margin:0;font-size:16px}
+.dw-news a{text-decoration:none;color:#0868c4;transition:color .2s}
+.dw-news a:hover{text-decoration:underline;color:#064d91}
+.dw-news p,.dw-news li{font-family:inherit}
+.dw-news button,.dw-news select{font:inherit}
+.dw-news h1,.dw-news h2,.dw-news h3,.dw-news h4{font-family:inherit;letter-spacing:-.028em;font-weight:750;text-transform:none;margin:0;color:inherit}
+.dw-news h1{font-size:clamp(2.3rem,5vw,4.55rem);line-height:1.1}
+.dw-news h2{font-size:clamp(1.75rem,3.2vw,2.6rem);line-height:1.19}
+.dw-news h3{font-size:1.3rem;line-height:1.3}
+.dw-news strong{font-weight:720}
+.dw-news img{max-width:100%;height:auto}
+.dw-shell{width:min(1170px,calc(100% - 48px));margin-inline:auto}
+.dw-skip{position:absolute;top:-150px;left:12px;background:white;color:#123;padding:10px;z-index:10}
+.dw-skip:focus{top:12px}
+.dw-topbar{background:#06162c;color:#c8deee;font-size:12px;border-bottom:1px solid #234369}
+.dw-topbar .dw-shell{display:flex;justify-content:space-between;align-items:center;gap:12px;min-height:36px}
+.dw-topbar strong{color:#93d4ff;font-weight:650;letter-spacing:.055em;text-transform:uppercase}
+.dw-topbar .dw-topbar-right{display:flex;align-items:center;gap:9px}
+.dw-topbar label{color:#bdcfe3;margin:0}
+.dw-topbar select{background:#0d2948;color:#fff;border:1px solid #2c4a6d;border-radius:6px;padding:4px 9px;font-size:12px;max-width:130px}
+.dw-header{background:#071d38;color:#fff}
+.dw-header .dw-shell{display:flex;justify-content:space-between;align-items:center;min-height:88px;gap:22px}
+.dw-brand{display:block;line-height:1}
+.dw-brand img{display:block;width:min(210px,34vw);max-height:65px;object-fit:contain}
+.dw-header-nav{display:flex;flex-wrap:wrap;justify-content:end;align-items:center;gap:clamp(15px,2.4vw,30px)}
+.dw-header-nav a{font-size:14px;font-weight:700;color:#cdddF0}
+.dw-header-nav a:hover,.dw-header-nav a[aria-current=page]{color:#62d7fd}
+.dw-header-nav .dw-nav-cta{background:#237ada;padding:10px 17px;border-radius:7px;color:#fff;white-space:nowrap}
+.dw-header-nav .dw-nav-cta:hover{color:#fff;background:#368cec;text-decoration:none}
+.dw-hero{background:radial-gradient(ellipse at 80% 25%,rgba(16,125,224,.45),transparent 44%),linear-gradient(120deg,rgba(4,22,46,.97),rgba(10,59,107,.88)),url('/images/hero-bg.jpg') center/cover;color:white;position:relative;overflow:hidden}
+.dw-hero:after{content:'';position:absolute;width:450px;height:450px;border:1px solid rgba(94,209,255,.12);border-radius:50%;right:-150px;top:-180px;pointer-events:none}
+.dw-hero .dw-shell{position:relative;z-index:1}
+.dw-hero-inner{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(235px,.65fr);gap:45px;align-items:center;padding:80px 0 88px}
+.dw-hero-small{padding:65px 0 73px}
+.dw-kicker{text-transform:uppercase;letter-spacing:.16em;font-size:12px;font-weight:750;color:#70d9ff;margin-bottom:18px;display:block}
+.dw-hero h1{color:#fff;max-width:880px}
+.dw-hero .dw-lead{font-size:clamp(17px,2.1vw,20px);line-height:1.7;color:#e0edfc;max-width:710px;margin:24px 0 0}
+.dw-hero-links{display:flex;gap:13px;align-items:center;flex-wrap:wrap;margin-top:29px}
+.dw-btn{display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:11px 19px;border-radius:8px;font-size:14px;font-weight:750!important;line-height:1.3;text-decoration:none!important}
+.dw-btn-primary{background:#167adb;color:white!important;box-shadow:0 9px 28px rgba(0,0,0,.13)}
+.dw-btn-primary:hover{background:#3596fa;color:white!important}
+.dw-btn-light{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.3);color:white!important}
+.dw-btn-light:hover{background:rgba(255,255,255,.18);color:#fff!important}
+.dw-price{background:rgba(5,20,40,.55);border:1px solid rgba(127,204,255,.22);border-radius:17px;padding:26px 25px;box-shadow:0 20px 50px rgba(0,10,25,.17);backdrop-filter:blur(8px)}
+.dw-price h2{font-size:14px;letter-spacing:.04em;text-transform:uppercase;color:#bbd8f5;margin-bottom:15px}
+.dw-price-value{font-size:clamp(25px,3.1vw,37px);font-weight:780;line-height:1.3;color:#fff;letter-spacing:-.045em;word-break:break-word}
+.dw-price-unit{font-size:14px;color:#a9cde9;margin:6px 0 17px}
+.dw-price-state,.dw-price-source{font-size:12px;line-height:1.55;color:#b9d1e5;margin:5px 0}
+.dw-price-controls{display:flex;align-items:center;gap:11px;flex-wrap:wrap;margin-top:17px}
+.dw-price-controls label{color:#bcd7ec;font-size:12px;margin:0}
+.dw-price-controls select{padding:7px 9px;border-radius:7px;border:1px solid #46729d;background:#09294b;color:white;max-width:145px;font-size:13px}
+.dw-section{padding:70px 0}
+.dw-section-alt{background:#fff}
+.dw-section-top{display:flex;justify-content:space-between;align-items:end;gap:18px;flex-wrap:wrap;margin-bottom:30px}
+.dw-section-top p{color:var(--dw-muted);margin:8px 0 0;max-width:620px}
+.dw-section-label{font-size:12px;letter-spacing:.11em;text-transform:uppercase;font-weight:750;color:#0e67c8;margin-bottom:11px}
+.dw-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:25px}
+.dw-card{border:1px solid var(--dw-line);border-radius:16px;overflow:hidden;background:#fff;box-shadow:0 15px 42px rgba(18,62,103,.07);display:flex;flex-direction:column}
+.dw-card-visual{height:205px;background:radial-gradient(circle at 76% 26%,#248fff 0,transparent 39%),linear-gradient(135deg,#071c3c,#0b5b9d);padding:24px;display:flex;align-items:center;gap:22px;color:white}
+.dw-card-visual.is-upcoming{background:radial-gradient(circle at 75% 15%,#3477db 0,transparent 45%),linear-gradient(135deg,#09152b,#11477b)}
+.dw-card-visual img{width:76px;height:76px;object-fit:contain;flex-shrink:0}
+.dw-card-visual strong{font-size:26px;color:#fff;line-height:1.2}
+.dw-card-visual span{display:block;color:#c4e7ff;font-size:12px;letter-spacing:.05em;text-transform:uppercase;margin-top:10px}
+.dw-card-body{padding:30px;display:flex;flex-direction:column;flex:1}
+.dw-card-date{font-size:12px;color:#6b7e90;letter-spacing:.045em;text-transform:uppercase;font-weight:700}
+.dw-card h3{font-size:24px;line-height:1.24;margin:12px 0 14px;color:#0b2f52}
+.dw-card p{color:#52667b;font-size:15px;line-height:1.75;margin:0 0 20px}
+.dw-card-bottom{margin-top:auto;border-top:1px solid #e7eef7;padding-top:17px}
+.dw-card-bottom a{font-weight:750;font-size:14px}
+.dw-pill{display:inline-flex;align-items:center;background:#dff1ff;color:#075ba4;border-radius:20px;padding:5px 11px;font-size:11px;font-weight:800;letter-spacing:.04em;text-transform:uppercase}
+.dw-pill-soon{background:#fff3da;color:#795109}
+.dw-promise-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:25px}
+.dw-promise{border:1px solid #dce9f4;border-radius:12px;background:#f6fbff;padding:25px}
+.dw-promise .dw-promise-number{font-size:12px;color:#127ac9;letter-spacing:.1em;font-weight:800;margin-bottom:14px}
+.dw-promise h3{color:#0d3359;font-size:19px;margin-bottom:11px}
+.dw-promise p{font-size:15px;line-height:1.7;color:#50657b;margin:0}
+.dw-apple-panel{background:linear-gradient(115deg,#091d38,#0b3971);color:white;border-radius:18px;padding:40px;display:flex;align-items:center;justify-content:space-between;gap:30px;box-shadow:0 17px 43px rgba(3,28,69,.12)}
+.dw-apple-panel h2{color:white;font-size:30px;margin:8px 0}
+.dw-apple-panel p{font-size:15px;color:#cfdeef;margin:0}
+.dw-app-badges{display:flex;flex-direction:column;gap:10px;align-items:center}
+.dw-app-badges a{display:inline-block;line-height:0}
+.dw-app-badges img{width:183px;height:auto;max-height:60px;object-fit:contain}
+.dw-app-badges .dw-small{color:#c2d9ef;font-size:12px;line-height:1.5;text-align:center;max-width:220px}
+.dw-article-wrap{background:#f4f8fc;padding:55px 0 90px}
+.dw-article-grid{display:grid;grid-template-columns:minmax(0,1fr) 254px;gap:35px;align-items:start}
+.dw-story{background:#fff;border:1px solid #e0e9f2;border-radius:15px;padding:clamp(27px,4.5vw,58px);box-shadow:0 17px 45px rgba(11,49,91,.045)}
+.dw-breadcrumb{color:#5c7186;font-size:13px;margin:0 0 24px}
+.dw-breadcrumb a{font-weight:650}
+.dw-story h1{font-size:clamp(32px,4.1vw,51px);color:#0a2c51;line-height:1.13;margin:13px 0 19px}
+.dw-story .dw-dek{font-size:19px;color:#314f6b;line-height:1.75;margin:0 0 20px;font-weight:450}
+.dw-story h2{font-size:clamp(24px,3vw,31px);color:#0b365c;margin:41px 0 15px}
+.dw-story h3{font-size:21px;color:#0b365c;margin:29px 0 11px}
+.dw-story p,.dw-story li{font-size:16px;line-height:1.87;color:#354d63}
+.dw-story p{margin:0 0 20px}
+.dw-story ul,.dw-story ol{padding-left:23px;margin:10px 0 24px}
+.dw-story li{padding-left:3px;margin-bottom:10px}
+.dw-story .dw-story-meta{font-size:13px;font-weight:700;color:#61758a;margin-bottom:24px}
+.dw-story .dw-story-figure{margin:29px 0 35px;padding:25px;background:linear-gradient(135deg,#071b38,#0c5da4);border-radius:12px;color:#d8edff;display:flex;justify-content:space-between;align-items:center;gap:15px}
+.dw-story-figure img{width:80px;height:80px;object-fit:contain}
+.dw-story-figure strong{font-size:25px;line-height:1.25;color:#fff}
+.dw-story .dw-highlight{background:#eef8ff;border-left:4px solid #1883da;border-radius:0 9px 9px 0;padding:22px 26px;margin:24px 0}
+.dw-story .dw-highlight p{margin:0}
+.dw-story .dw-caution{background:#fff8e9;border-left-color:#e6a233}
+.dw-story .dw-ultra{background:#f2f9f8;border-left-color:#24998d}
+.dw-story .dw-end{border-top:1px solid #e0eaf1;margin-top:35px;padding-top:27px}
+.dw-story details{border:1px solid #dce9f4;background:#f7fbff;border-radius:10px;padding:18px 22px;margin:25px 0}
+.dw-story details summary{cursor:pointer;font-weight:800;color:#0f508a}
+.dw-story details[open] summary{margin-bottom:16px}
+.dw-story code{font-size:.91em;background:#eef5fa;padding:2px 5px;border-radius:3px;overflow-wrap:anywhere}
+.dw-story .dw-share{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:30px}
+.dw-story .dw-share a,.dw-share button{font-size:13px;background:#f1f7fb;border:1px solid #d6e7f6;color:#0b5ea8;padding:9px 12px;border-radius:7px;font-weight:650;cursor:pointer}
+.dw-sidebar{position:sticky;top:20px}
+.dw-sidebar-card{background:#fff;border:1px solid #e0e9f2;border-radius:13px;padding:23px;margin-bottom:20px}
+.dw-sidebar-card h3{font-size:18px;margin-bottom:12px;color:#0a345d}
+.dw-sidebar-card p{font-size:14px;line-height:1.65;color:#536b80}
+.dw-sidebar-card ul{padding-left:17px;margin:10px 0 0}
+.dw-sidebar-card li{font-size:14px;margin-bottom:9px}
+.dw-sidebar-card .dw-app-badges img{width:190px}
+.dw-footer{background:#071b35;color:#cee0ef;padding:53px 0 42px}
+.dw-footer .dw-shell{display:flex;flex-wrap:wrap;justify-content:space-between;gap:26px}
+.dw-footer h2{color:#fff;font-size:18px;margin-bottom:10px}
+.dw-footer p,.dw-footer small{font-size:13px;line-height:1.7;color:#b1c6da;margin:0}
+.dw-footer a{color:#d1e9ff;font-size:13px}
+.dw-footer nav{display:flex;gap:17px;flex-wrap:wrap;align-items:start}
+.dw-english-note{font-size:12px!important;color:#7794ac!important;margin-top:11px!important}
+.dw-news a:focus-visible,.dw-news button:focus-visible,.dw-news select:focus-visible{outline:3px solid #58befe;outline-offset:3px}
+@media(max-width:950px){.dw-article-grid{grid-template-columns:minmax(0,1fr)}.dw-sidebar{position:static;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.dw-sidebar-card{margin-bottom:0}.dw-hero-inner{grid-template-columns:minmax(0,1fr) 240px;gap:22px}}
+@media(max-width:700px){.dw-shell{width:min(100% - 32px,1170px)}.dw-topbar .dw-shell{padding:9px 0;min-height:0;flex-wrap:wrap}.dw-header .dw-shell{min-height:0;flex-direction:column;padding:17px 0 21px;gap:15px}.dw-header-nav{justify-content:center;gap:14px}.dw-header-nav a{font-size:12px}.dw-brand img{width:178px}.dw-hero-inner{grid-template-columns:1fr;padding:62px 0;gap:29px}.dw-hero-small{padding:47px 0 51px}.dw-price{padding:20px}.dw-section{padding:50px 0}.dw-cards,.dw-promise-grid,.dw-sidebar{grid-template-columns:1fr}.dw-card-visual{height:170px}.dw-card-body{padding:23px}.dw-apple-panel{padding:28px;flex-direction:column;align-items:flex-start}.dw-app-badges{align-items:flex-start}.dw-app-badges .dw-small{text-align:left}.dw-article-wrap{padding:25px 0 60px}.dw-story{padding:27px 21px}.dw-story .dw-story-figure{padding:19px}.dw-story-figure strong{font-size:19px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.dw-news a{transition:none}}
+
+/* V3: make price values always legible and unbroken (also in article sidebars). */
+.dw-news .dw-hero-inner>* , .dw-news .dw-article-grid>*, .dw-news .dw-cards>*, .dw-news .dw-sidebar>*, .dw-news .dw-shell{min-width:0;max-width:100%}
+.dw-news .dw-price{background:linear-gradient(145deg,#0c3968,#061c39)!important;color:#f5fbff!important;min-width:0;max-width:100%;padding:clamp(18px,2.3vw,25px)!important;overflow:hidden!important;border:1px solid #3e89c0!important;box-shadow:0 17px 38px rgba(0,13,38,.17)!important}
+.dw-news .dw-price h2{font-size:14px!important;color:#e0f3ff!important;line-height:1.35!important;letter-spacing:.05em!important;margin:0 0 10px!important}
+.dw-news .dw-price .dw-price-value{font-family:system-ui,-apple-system,'Segoe UI',sans-serif!important;font-size:clamp(25px,2.4vw,34px)!important;font-weight:800!important;letter-spacing:-.035em!important;line-height:1.17!important;color:#fff!important;white-space:nowrap!important;word-break:normal!important;overflow-wrap:normal!important;font-variant-numeric:tabular-nums!important;display:block!important;max-width:100%!important;overflow:visible!important}
+.dw-news .dw-price .dw-price-unit{color:#c6e8ff!important;font-size:14px!important;margin:10px 0 17px!important}
+.dw-news .dw-price .dw-price-state,.dw-news .dw-price .dw-price-source{color:#deecfc!important;font-size:12px!important;line-height:1.55!important;overflow-wrap:break-word!important}
+.dw-news .dw-price .dw-price-controls{display:flex!important;align-items:center!important;gap:12px!important;margin:18px 0 17px!important;flex-wrap:wrap!important}
+.dw-news .dw-price .dw-price-controls label{color:#e5f3ff!important;margin:0!important;font-size:13px!important}
+.dw-news .dw-price select{color:#fff!important;background:#092b50!important;border:1px solid #58acdf!important;font-size:13px!important;padding:7px 12px!important;min-height:42px!important;max-width:min(150px,100%)!important}
+.dw-news .dw-sidebar-card .dw-price{padding:16px!important}
+.dw-news .dw-sidebar-card .dw-price .dw-price-value{font-size:clamp(22px,2.4vw,30px)!important}
+/* V3: high-resolution, real editorial artwork, ratio 1.9:1 for social sharing. */
+.dw-news .dw-card-visual.has-preview{height:auto!important;padding:0!important;aspect-ratio:1200 / 630;position:relative;overflow:hidden}
+.dw-news .dw-card-visual.has-preview img.dw-card-preview{display:block!important;width:100%!important;height:100%!important;max-width:100%!important;object-fit:cover!important;object-position:center!important}
+.dw-news .dw-story figure.dw-feature-figure{margin:27px 0 35px;padding:0;background:#0a2c55;border-radius:12px;overflow:hidden;border:1px solid #c9e4fa}
+.dw-news .dw-story figure.dw-feature-figure img{display:block;width:100%;height:auto;aspect-ratio:1200/630;object-fit:cover}
+.dw-news .dw-story figure.dw-feature-figure figcaption{background:#eff8ff;color:#3b6282;font-size:12px;line-height:1.55;padding:11px 15px;margin:0}
+.dw-news .dw-story{overflow-wrap:break-word;min-width:0}
+.dw-news .dw-story a,.dw-news .dw-sidebar a{overflow-wrap:anywhere}
+.dw-news .dw-header-nav{gap:clamp(10px,1.7vw,24px)}
+.dw-news .dw-sidebar{min-width:0}
+.dw-news .dw-hero-inner{grid-template-columns:minmax(0,1.4fr) minmax(275px,.6fr);gap:clamp(22px,3vw,45px)}
+.dw-news .dw-card{min-width:0}
+@media(max-width:1100px){.dw-news .dw-hero-inner{grid-template-columns:minmax(0,1fr) minmax(280px,.7fr)}.dw-news .dw-article-grid{gap:20px}}
+@media(max-width:900px){.dw-news .dw-hero-inner{grid-template-columns:minmax(0,1fr)!important;gap:26px!important;padding:58px 0!important}.dw-news .dw-hero-inner .dw-price{max-width:440px!important;width:100%}.dw-news .dw-article-grid{grid-template-columns:minmax(0,1fr)!important}.dw-news .dw-sidebar{position:static!important;grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+@media(max-width:700px){.dw-news .dw-sidebar{grid-template-columns:minmax(0,1fr)!important}.dw-news .dw-price{padding:22px!important}.dw-news .dw-card-visual.has-preview{height:auto!important}.dw-news .dw-hero-inner .dw-price{max-width:100%!important}.dw-news .dw-header-nav{row-gap:10px;justify-content:center}.dw-news .dw-story h1{font-size:clamp(29px,7.7vw,44px)!important}.dw-news .dw-apple-panel{gap:16px}.dw-news .dw-price .dw-price-value{font-size:clamp(26px,6vw,34px)!important}}
+@media(max-width:400px){.dw-news .dw-shell{width:calc(100% - 24px)!important}.dw-news .dw-hero-inner{padding:40px 0!important}.dw-news .dw-hero h1{font-size:clamp(32px,9.4vw,42px)!important}.dw-news .dw-header-nav a{font-size:12px!important}.dw-news .dw-story{padding:23px 16px!important}.dw-news .dw-price .dw-price-value{font-size:27px!important}.dw-news .dw-price .dw-price-controls{gap:9px!important}.dw-news .dw-card h3{font-size:21px!important}}
+
+/* V3.1: a compact quote that never wraps or overflows, regardless of currency or screen. */
+.dw-news .dw-price-value{max-width:100%!important;min-width:0!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:clip!important;word-break:normal!important;overflow-wrap:normal!important;line-height:1.19!important}
+.dw-news .dw-price{container-type:inline-size}
+@container(max-width:250px){.dw-news .dw-price-value{font-size:clamp(19px,9cqw,28px)!important}.dw-news .dw-price-controls{gap:8px!important}}
+.dw-news .dw-price .dw-price-state,.dw-news .dw-price .dw-price-source{word-break:normal!important;overflow-wrap:break-word!important}
+.dw-news .dw-ad-target{display:none;min-width:0;max-width:100%;width:100%;margin:0 auto}
+.dw-news .dw-ad-target.is-active{display:block;margin:32px auto;min-height:100px;max-width:100%;padding:8px 0;text-align:center;clear:both;overflow:hidden}
+.dw-news .dw-ad-target.is-active:before{content:'Advertisement';display:block;font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:#728497;margin-bottom:9px}
+.dw-news .dw-ad-target.is-active ins.adsbygoogle{display:block;max-width:100%;min-height:100px}
+.dw-news .dw-sidebar .dw-ad-target.is-active{margin:0 0 22px}
+@media(max-width:700px){.dw-news .dw-ad-target.is-active{margin:25px auto}.dw-news .dw-price{container-type:inline-size}}
+
+
+/* v3.3 Official DigiByte logo */
+.dw-news .dw-price-heading{display:flex;align-items:center;gap:10px;margin-bottom:13px;min-width:0}
+.dw-news .dw-price-heading img{display:block;width:42px!important;height:42px!important;min-width:42px;object-fit:contain;flex:0 0 42px}
+.dw-news .dw-price-heading h2{margin:0!important;flex:1;font-size:13px!important;line-height:1.35!important;color:#dbeeff!important}
+.dw-news .dw-news-brand{display:inline-flex;align-items:center;gap:7px;min-width:0}
+.dw-news .dw-news-brand img{width:25px!important;height:25px!important;flex:0 0 25px;object-fit:contain}
+@media(max-width:390px){.dw-news .dw-news-brand{font-size:10px!important}.dw-news .dw-news-brand img{width:21px!important;height:21px!important;flex-basis:21px}}

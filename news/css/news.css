@@ -1,0 +1,74 @@
+
+.dw-news{margin:0;background:#f4f8fc;color:#17283d;
+  font-family:Arial,Helvetica,sans-serif;font-size:17px;line-height:1.7}
+.dw-news *{box-sizing:border-box}
+.dw-news a{color:#0874c8;text-decoration:none}
+.dw-news a:hover{text-decoration:underline}
+.dw-container{width:min(1120px,calc(100% - 36px));margin:auto}
+.dw-header{background:#071b35;border-bottom:1px solid #20456a;
+  position:relative;z-index:2}
+.dw-header-inner{display:flex;align-items:center;
+  justify-content:space-between;gap:22px;min-height:88px}
+.dw-logo img{display:block;width:185px;max-height:65px;object-fit:contain}
+.dw-header nav{display:flex;flex-wrap:wrap;gap:20px}
+.dw-header nav a{color:white;font-size:14px;font-weight:600}
+.dw-hero{background:linear-gradient(110deg,rgba(3,20,45,.94),
+  rgba(3,61,114,.78)),url('/images/hero-bg.jpg') center/cover;
+  color:white;padding:98px 0 88px}
+.dw-eyebrow{color:#54c6ff;letter-spacing:.13em;text-transform:uppercase;
+  font-size:12px;font-weight:700}
+.dw-hero h1{color:white;font-size:clamp(36px,5vw,62px);
+  line-height:1.12;max-width:850px;margin:18px 0}
+.dw-hero p{color:#e1effc;max-width:750px;font-size:19px}
+.dw-button{display:inline-block;background:#1686df;color:#fff!important;
+  padding:13px 23px;border-radius:6px;font-weight:700;margin-top:16px}
+.dw-section{padding:68px 0 92px}
+.dw-section-title{font-size:29px;color:#102c4c;margin-bottom:28px}
+.dw-card{background:white;border:1px solid #dce8f2;border-radius:12px;
+  overflow:hidden;box-shadow:0 12px 36px rgba(10,52,92,.08);
+  display:grid;grid-template-columns:260px 1fr}
+.dw-card-banner{background:linear-gradient(145deg,#063765,#0878ca);
+  color:white;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;padding:35px;text-align:center}
+.dw-card-banner img{width:95px;height:95px;object-fit:contain}
+.dw-card-banner span{font-size:28px;font-weight:800;margin-top:12px}
+.dw-card-body{padding:32px 38px}
+.dw-date{color:#5d7184;font-size:14px}
+.dw-card h2{font-size:27px;line-height:1.25;margin:14px 0;color:#112d4b}
+.dw-card p{color:#415569;font-size:16px}
+.dw-article{max-width:840px;margin:0 auto;padding:55px 20px 90px;
+  background:transparent}
+.dw-breadcrumb{font-size:14px;margin-bottom:28px;color:#64788c}
+.dw-article h1{font-size:clamp(33px,4.5vw,49px);
+  line-height:1.17;color:#0a2d50;margin:12px 0 18px}
+.dw-article h2{color:#0d3966;font-size:27px;margin:42px 0 13px}
+.dw-article p,.dw-article li{font-size:17px;line-height:1.85;color:#334b63}
+.dw-article li{margin-bottom:13px}
+.dw-article ul{padding-left:27px}
+.dw-article .dw-lead{font-size:20px;color:#254766}
+.dw-article figure{text-align:center;margin:35px 0;
+  padding:25px;background:white;border:1px solid #e0eaf2;border-radius:10px}
+.dw-article figure img{width:120px;height:120px;object-fit:contain}
+.dw-article figcaption{font-size:13px;color:#6a7f92;margin-top:12px}
+.dw-note{background:#e5f2ff;border-left:4px solid #1686df;
+  padding:22px 25px;margin:30px 0;border-radius:5px}
+.dw-note p{margin:0}
+.dw-footer{background:#071b35;color:#d1dfed;padding:50px 0}
+.dw-footer-inner{display:flex;justify-content:space-between;
+  gap:35px;flex-wrap:wrap}
+.dw-footer p,.dw-footer small{color:#bbcede}
+.dw-footer nav{display:flex;gap:20px;flex-wrap:wrap;align-content:start}
+.dw-footer a{color:#fff}
+.dw-disclosure{border-top:1px solid #d1dfeb;margin-top:38px;
+  padding-top:19px;font-size:14px!important;color:#60758a!important}
+@media(max-width:700px){
+  .dw-header-inner{flex-direction:column;padding:17px 0}
+  .dw-header nav{justify-content:center;gap:14px}
+  .dw-logo img{width:155px}
+  .dw-hero{padding:65px 0}
+  .dw-hero p{font-size:17px}
+  .dw-card{grid-template-columns:1fr}
+  .dw-card-banner{min-height:200px}
+  .dw-card-body{padding:25px}
+  .dw-article{padding-top:35px}
+}
