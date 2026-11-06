@@ -58,3 +58,7 @@
 !/ops/
 /ops/*
 !/ops/digibyte-news-sitemap.cron
+
+# Reviewed Markdown newsroom publishing workflow; faucet remains excluded.
+!/tools/news-publisher.py
+!/tools/NEWS_PUBLISHING.md
