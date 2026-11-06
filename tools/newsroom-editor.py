@@ -256,8 +256,8 @@ LOGIN = '''<!doctype html><html><head><meta charset="utf-8"><meta name="viewport
 class Handler(BaseHTTPRequestHandler):
     protocol_version = 'HTTP/1.1'
     def log_message(self,fmt,*args):
-        # No request bodies, cookie data or passwords in logs.
-        print('%s %s' % (self.address_string(),fmt % args),flush=True)
+        # Never log untrusted request lines or submitted credentials.
+        return
     def headers_secure(self,typ='application/json; charset=utf-8'):
         self.send_header('Content-Type',typ)
         self.send_header('Cache-Control','no-store, max-age=0')
@@ -270,6 +270,9 @@ class Handler(BaseHTTPRequestHandler):
         b=(obj.encode() if isinstance(obj,str) else bytes(obj) if isinstance(obj,(bytes,bytearray)) else json.dumps(obj,ensure_ascii=False).encode())
         self.send_response(status)
         self.headers_secure(typ)
+        if status >= 400 and self.command == 'POST':
+            self.close_connection = True
+            self.send_header('Connection','close')
         if cookie is not None:self.send_header('Set-Cookie',cookie)
         self.send_header('Content-Length',str(len(b)))
         self.end_headers()
