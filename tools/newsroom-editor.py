@@ -258,7 +258,16 @@ window.addEventListener('message',event=>{
   const d=msg.draft;
   if(!d||typeof d!=='object'||typeof d.title!=='string'||d.title.length>155||typeof d.slug!=='string'||!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(d.slug)||d.slug.length>85||typeof d.summary!=='string'||d.summary.length>360||typeof d.body!=='string'||d.body.length>100000)return;
   if(dgbImportedTickets.has(msg.ticket)){if(event.source)event.source.postMessage({type:'dgb_editor_imported',ticket:msg.ticket,accepted:dgbImportedTickets.get(msg.ticket)},event.origin);return;}
-  let accepted=confirm('Import this researched working draft? Unsaved text currently in the editor will be replaced. It will NOT be published.');
+  // Automatically import into a blank editor without interrupting the user.
+  // Never silently overwrite an existing article, image, or unsaved work.
+  const existingWork=Boolean(
+    ['title','slug','summary','body','image_alt'].some(id=>$(id).value.trim()) ||
+    imageData || hasServerImage
+  );
+  let accepted=!existingWork;
+  if(existingWork){
+    announce('Import skipped to protect your existing work. Open a fresh Article Editor tab from Story Radar and resend.',true);
+  }
   if(accepted){
     apply({title:d.title,slug:d.slug,summary:d.summary,body:d.body,category:d.category||'Development update',tags:d.tags||'DigiByte, DGB, DigiByte Wallet',image_alt:'',focus_x:'50',focus_y:'50'});
     announce('Working draft imported. Verify the sources, edit the text, add an original image and click Save draft.');
@@ -333,7 +342,17 @@ class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
         if not self.guard():return
         path=urlparse(self.path).path
-        if path=='/login':return self.send(200,LOGIN,'text/html; charset=utf-8')
+        if path in ('/login', '/'):
+            session = self.current_session()
+            if (path == '/login' and session) or (path == '/' and not session):
+                self.send_response(303)
+                self.headers_secure('text/plain')
+                self.send_header('Location', '/' if session else '/login')
+                self.send_header('Content-Length', '0')
+                self.end_headers()
+                return
+            if path == '/login':
+                return self.send(200, LOGIN, 'text/html; charset=utf-8')
         if not self.auth():return
         if path=='/':return self.send(200,PAGE,'text/html; charset=utf-8')
         if path=='/api/session':return self.send(200,{'csrf':self.current_session()['csrf']})
