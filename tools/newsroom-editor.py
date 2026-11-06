@@ -266,7 +266,7 @@ window.addEventListener('message',event=>{
   dgbImportedTickets.set(msg.ticket,accepted);
   if(event.source)event.source.postMessage({type:'dgb_editor_imported',ticket:msg.ticket,accepted:accepted},event.origin);
 });
-(async()=>{try{let x=await api('/api/session');csrf=x.csrf;await list();$('new').click()}catch(e){announce(e.message,true)}})();
+(async()=>{try{$('new').click();let x=await api('/api/session');csrf=x.csrf;await list()}catch(e){announce(e.message,true)}})();
 </script></body></html>'''
 
 LOGIN = '''<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Private DigiByte Newsroom</title><style>body{background:#081629;color:#eff7ff;font:16px system-ui;min-height:90vh;display:grid;place-items:center}main{width:min(420px,90vw);background:#102440;border:1px solid #34506d;border-radius:20px;padding:30px}input,button{width:100%;box-sizing:border-box;padding:13px;font:inherit;border-radius:8px;margin-top:14px}button{background:#186181;color:white;border:0;cursor:pointer}input{background:#081629;color:white;border:1px solid #567895}small{color:#b3c6db}</style></head><body><main><h1>DigiByte Newsroom</h1><p>Private publishing dashboard</p><form method="POST" action="/login"><label>Password<input name="password" type="password" autocomplete="current-password" required autofocus></label><button>Sign in</button></form><p><small>Only available through your SSH tunnel. Authentication is required in addition to SSH access.</small></p></main></body></html>'''
