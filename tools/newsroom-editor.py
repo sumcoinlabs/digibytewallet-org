@@ -73,9 +73,9 @@ def set_password():
     mkdir()
     print('Private DigiByte Newsroom editor password (not GitHub/SSH password).')
     while True:
-        p = getpass.getpass('Choose password (at least 10 characters): ')
-        if len(p) < 10:
-            print('Please use at least 10 characters.'); continue
+        p = getpass.getpass('Choose password (at least 9 characters): ')
+        if len(p) < 9:
+            print('Please use at least 9 characters.'); continue
         confirm = getpass.getpass('Confirm password: ')
         if p != confirm:
             print('Passwords did not match.'); continue
