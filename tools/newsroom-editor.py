@@ -265,8 +265,24 @@ def publish_slug(slug):
 
 
 
+
+def unpublish_slug(slug):
+    if not safe_slug(slug):raise ValueError('Invalid published article slug')
+    if not PUBLISH_LOCK.acquire(blocking=False):raise RuntimeError('Another publication or withdrawal is in progress')
+    try:
+        tool=ROOT/'tools/news-unpublish.py'
+        if not tool.is_file():raise RuntimeError('Unpublish helper not installed')
+        run=subprocess.run([sys.executable,str(tool),'--slug',slug],
+                 text=True,capture_output=True,timeout=120)
+        if run.returncode:
+            raise RuntimeError('Withdrawal refused: '+(run.stderr or run.stdout)[-400:])
+        try:return json.loads(run.stdout.splitlines()[-1])
+        except (ValueError,IndexError):raise RuntimeError('Withdrawal tool returned invalid response')
+    finally:
+        PUBLISH_LOCK.release()
+
 def publication_control_v06():
-    """Read-only inventory and deployment alignment. No correction/retract action."""
+    """Published story inventory, including protected withdrawal controls."""
     items=json.loads((ROOT/'news/feed.json').read_text(encoding='utf-8')).get('items',[])
     output=[]
     for x in items[:80]:
@@ -283,8 +299,8 @@ def publication_control_v06():
                        'source_present':(ROOT/'news/content'/(slug+'.md')).is_file(),
                        'deployment_aligned':bool(aligned),
                        'source_url':'https://github.com/sumcoinlabs/digibytewallet-org/blob/main/news/content/'+slug+'.md'})
-    return {'articles':output,'mode':'read-only','auto_publish':False,
-            'correction_enabled':False,'retraction_enabled':False}
+    return {'articles':output,'mode':'admin-withdrawals','auto_publish':False,
+            'correction_enabled':False,'retraction_enabled':True}
 
 PAGE = r'''<!doctype html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -294,7 +310,7 @@ PAGE = r'''<!doctype html><html lang="en"><head><meta charset="utf-8">
 *{box-sizing:border-box}body{background:var(--bg);color:var(--fg);font:16px/1.5 system-ui,sans-serif;margin:0}button,input,textarea,select{font:inherit}button{cursor:pointer;background:#206083;color:white;border:1px solid #397e9d;border-radius:9px;padding:9px 14px}button:hover{background:#2b7797}button:disabled{opacity:.5;cursor:wait}
 header{background:#0a1c32;border-bottom:1px solid var(--line);padding:16px max(24px,calc((100vw - 1300px)/2))}header strong{font-size:20px}.top{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}header small{color:var(--muted)}main{max-width:1340px;margin:24px auto;padding:0 20px;display:grid;grid-template-columns:220px minmax(0,1fr) 280px;gap:22px}.panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px}h2{margin:0 0 18px;font-size:19px}label{display:block;color:#d6e6f3;font-weight:650;margin:12px 0 5px;font-size:13px}input,textarea,select{width:100%;background:#091a30;border:1px solid #365777;border-radius:9px;color:var(--fg);padding:10px}input:focus,textarea:focus{outline:2px solid var(--a)}textarea{min-height:350px;resize:vertical;font-family:ui-monospace,monospace;font-size:14px;line-height:1.7}#title{font-size:22px;font-weight:700}#summary{min-height:85px}.muted,small{color:var(--muted)}.toolbar{display:flex;gap:5px;flex-wrap:wrap;margin:10px 0}.toolbar button{padding:5px 10px}.buttons{display:flex;gap:10px;flex-wrap:wrap;margin-top:17px}.publish{background:#197354;border-color:#2f9e77}.draft{padding:10px;margin:8px 0;border-radius:8px;border:1px solid var(--line);cursor:pointer;overflow-wrap:anywhere}.draft:hover{border-color:var(--a)}#preview{background:#f9fbfe;color:#1b2c3d;min-height:350px;padding:25px;border-radius:9px;overflow:auto;display:none}#preview a{color:#17658f}#preview img{max-width:100%}.notice{color:#e8dba6;font-size:13px}.ok{color:#7cddb7}.err{color:#ffadb1}#imgpreview{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:8px;display:none}.stack{display:flex;flex-direction:column;gap:8px}.count{font-size:12px;color:var(--muted);text-align:right}a{color:#70e4ef}@media(max-width:1050px){main{grid-template-columns:1fr}.side{order:3}}@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
 </style></head><body><header><div class="top"><div><strong>DigiByte Wallet · Private Newsroom</strong><br><small>SSH tunnel + password · drafts stay on server · GitHub-first publishing</small></div><a href="http://127.0.0.1:8878/" target="_blank" rel="noopener noreferrer" style="margin-right:16px">Story Radar ↗</a><button id="logout">Sign out</button></div></header><main>
-<aside class="panel side"><h2>Private drafts</h2><button id="new">+ New article</button><div id="drafts"></div><p class="notice">Unpublished drafts and original images never enter the public repository.</p><h2 style="margin-top:22px">Published control</h2><p class="muted" style="font-size:12px">Read-only deployment and source checks. Existing articles cannot be overwritten.</p><button id="refreshPublishedV06" type="button">Refresh published</button><div id="publishedV06" class="stack" style="margin-top:10px"></div></aside>
+<aside class="panel side"><h2>Private drafts</h2><button id="new">+ New article</button><div id="drafts"></div><p class="notice">Unpublished drafts and original images never enter the public repository.</p><h2 style="margin-top:22px">Published control</h2><p class="muted" style="font-size:12px">Published stories can be withdrawn after confirmation. Original Git history remains available.</p><button id="refreshPublishedV06" type="button">Refresh published</button><div id="publishedV06" class="stack" style="margin-top:10px"></div></aside>
 <section class="panel"><label>Headline</label><input id="title" maxlength="155" placeholder="A clear, factual headline"><label>Article address (slug)</label><input id="slug" maxlength="85" placeholder="a-descriptive-article-title"><label>SEO summary</label><textarea id="summary" maxlength="360" style="min-height:85px" placeholder="A concise, factual description (45–360 characters)"></textarea><div class="count" id="summarycount"></div><label>Article text</label><div class="toolbar"><button data-md="bold" type="button">Bold</button><button data-md="h2" type="button">Heading</button><button data-md="h3" type="button">Subheading</button><button data-md="list" type="button">List</button><button data-md="link" type="button">Link</button><button id="togglepreview" type="button">Preview</button></div><textarea id="body" placeholder="Write your story here. You can use the toolbar for headings, emphasis, links, and lists."></textarea><div id="preview"></div><div id="reviewpanel" class="panel" style="display:none;margin-top:14px;background:#112b3e"><strong>Private source verification</strong><p class="notice">These notes are private and are never added to the published article.</p><ul id="reviewnotes" style="font-size:13px;padding-left:20px"></ul><label style="display:flex;gap:10px;align-items:center"><input id="reviewchecked" type="checkbox" style="width:auto">I have checked the claims, links, release status and artwork.</label></div><div class="buttons"><button id="save">Save draft</button><button class="publish" id="publish">Publish to website</button></div><p id="status" role="status" aria-live="polite"></p></section>
 <aside class="panel side"><h2>Search presentation</h2><p class="muted">Each article receives NewsArticle + breadcrumb data, canonical URL, accurate first-published timestamp, social metadata and sitemap entries.</p><label>Category</label><select id="category"><option>Development update</option><option>Security</option><option>Release</option><option>Education</option><option>Project news</option></select><label>Tags (comma separated)</label><input id="tags" value="DigiByte, DGB, DigiByte Wallet"><label>Featured image · JPEG, PNG, WebP</label><input id="image" type="file" accept="image/jpeg,image/png,image/webp"><img id="imgpreview" alt="Featured image crop preview"><p class="notice">Upload an original, relevant image at least 1600 × 1200px (max 8 MB). We generate 16:9, 4:3 and square crops for Google. Generic logos/text-heavy images are discouraged.</p><label>Horizontal focal point</label><input id="focus_x" type="range" min="0" max="100" value="50"><label>Vertical focal point</label><input id="focus_y" type="range" min="0" max="100" value="50"><label>Image alternative text</label><input id="image_alt" maxlength="180" placeholder="Describe what is visible in the picture"><div class="buttons"><button id="check">Check article</button></div><p class="notice">Release status must be verified. Publishing cannot guarantee search rankings, rich results, Google News or Discover placement.</p></aside>
 </main><script>
@@ -311,6 +327,18 @@ async function publishedControlV06(){
    let status=document.createElement('small');status.style.display='block';
    status.textContent=p.deployment_aligned?'Production matches GitHub checkout':'Warning: production/source mismatch';card.append(status);
    let link=document.createElement('a');link.textContent='Open article';link.href=p.url;link.target='_blank';link.rel='noopener noreferrer';card.append(link);
+    if(p.deployment_aligned){
+      let b=document.createElement('button');b.textContent='Unpublish';b.type='button';
+      b.style.marginLeft='8px';b.style.background='#7e3142';
+      b.onclick=async()=>{
+        let typed=prompt('To unpublish this story from the site and feeds, type its exact slug: '+p.slug);
+        if(typed!==p.slug){announce('Unpublish cancelled: slug did not match',true);return}
+        if(!confirm('Remove this article from the website, feeds and sitemaps? Git history and outside caches will remain.'))return;
+        b.disabled=true;
+        try{let result=await api('/api/unpublish',{slug:p.slug});announce('Unpublished: '+result.slug+' (GitHub '+result.commit+')');await publishedControlV06()}
+        catch(e){announce('Unpublish failed: '+e.message,true);b.disabled=false}
+      };card.append(b);
+    }
    if(p.source_present){let src=document.createElement('a');src.textContent=' · Manuscript';src.href=p.source_url;src.target='_blank';src.rel='noopener noreferrer';card.append(src)}
    out.append(card);
  }
@@ -554,6 +582,8 @@ class Handler(BaseHTTPRequestHandler):
                     private_write(IMAGES/(slug+'.bin'),binary)
                 private_write(DRAFTS/(slug+'.json'),json.dumps(v,ensure_ascii=False).encode())
                 return self.send(200,{'ok':True,'has_image':(IMAGES/(slug+'.bin')).exists()})
+            if path=='/api/unpublish':
+                return self.send(200,unpublish_slug(v.get('slug','')))
             if path=='/api/publish':
                 result=publish_slug(v.get('slug',''))
                 return self.send(200,result)
