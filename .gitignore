@@ -65,6 +65,8 @@
 
 # Loopback-only reviewed private newsroom editor. Source is public; passwords and drafts are NEVER committed.
 !/tools/newsroom-editor.py
+!/tools/newsroom-studio.html
+!/tools/newsroom-artwork.py
 !/tools/news-unpublish.py
 !/tools/install-newsroom-editor.sh
 !/tools/NEWSROOM_EDITOR.md

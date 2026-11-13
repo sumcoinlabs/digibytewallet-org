@@ -221,6 +221,34 @@ def create_images(d):
                       'image_square':'/news/assets/'+slug+'-1x1.jpg'}
 
 
+def generate_original_artwork(d):
+    """Local, topic-aware artwork. Never downloads imagery or exposes drafts."""
+    module_path = ROOT / 'tools/newsroom-artwork.py'
+    if not module_path.is_file():
+        raise RuntimeError('Original artwork generator is not installed')
+    spec = importlib.util.spec_from_file_location('dgb_newsroom_artwork', str(module_path))
+    generator = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(generator)
+    raw = generator.render(d)
+    if not isinstance(raw,bytes) or not (10000 <= len(raw) <= 8 * 1024 * 1024):
+        raise RuntimeError('Image generator returned an invalid output')
+    with Image.open(io.BytesIO(raw)) as pic:
+        if pic.format != 'PNG' or pic.size != (1600,1200):
+            raise RuntimeError('Image generator output dimensions are incorrect')
+    return raw
+
+
+def ensure_original_artwork(d):
+    slug = d.get('slug')
+    if not safe_slug(slug):
+        raise ValueError('Invalid article slug')
+    path = IMAGES / (slug + '.bin')
+    if path.is_file():
+        return False
+    private_write(path, generate_original_artwork(d))
+    return True
+
+
 def publish_slug(slug):
     if not PUBLISH_LOCK.acquire(blocking=False): raise RuntimeError('Another publication is running')
     try:
@@ -234,6 +262,7 @@ def publish_slug(slug):
         mod = publisher()
         mod.verify_repo()
         # Prepare and validate content BEFORE writing a public image.
+        ensure_original_artwork(d)
         images, paths = create_images(d)
         manuscript = markdown_source(d,paths)
         meta, body = mod.parse_manuscript(markdown_source(d))
@@ -477,7 +506,9 @@ class Handler(BaseHTTPRequestHandler):
             if path == '/login':
                 return self.send(200, LOGIN, 'text/html; charset=utf-8')
         if not self.auth():return
-        if path=='/':return self.send(200,PAGE,'text/html; charset=utf-8')
+        if path=='/':
+            studio = ROOT / 'tools/newsroom-studio.html'
+            return self.send(200, studio.read_text('utf-8') if studio.is_file() else PAGE, 'text/html; charset=utf-8')
         if path=='/api/session':return self.send(200,{'csrf':self.current_session()['csrf']})
         if path.startswith('/api/image/'):
             slug=path[len('/api/image/'):]
@@ -556,7 +587,7 @@ class Handler(BaseHTTPRequestHandler):
                 mod.markdown(v['body'])
                 if len(re.findall(r'\w+',v['body']))<60:raise ValueError('Write at least 60 words')
                 if len(v['title'])<10 or len(v['summary'])<45:raise ValueError('Headline or summary too short')
-                return self.send(200,{'message':'Article fields and Markdown look ready. Upload a featured image and save draft before publishing.'})
+                return self.send(200,{'message':'Article fields look ready. The Studio saves original artwork automatically; confirm facts before publishing.'})
             if path=='/api/save':
                 slug=v.get('slug','')
                 if not safe_slug(slug):raise ValueError('Invalid slug')
@@ -571,6 +602,8 @@ class Handler(BaseHTTPRequestHandler):
                 if not isinstance(checks,list) or len(checks)>12 or not all(isinstance(item,str) and len(item)<300 for item in checks):
                     raise ValueError('Invalid private verification checklist')
                 markdown_source(v)
+                if not v.get('image_alt'):
+                    v['image_alt'] = ('Original editorial illustration: ' + v['title'])[:180]
                 if original_image is not None:
                     if not isinstance(original_image,str) or not re.match(r'^data:image/(jpeg|png|webp);base64,',original_image):raise ValueError('Invalid image data')
                     binary=base64.b64decode(original_image.split(',',1)[1],validate=True)
@@ -580,8 +613,18 @@ class Handler(BaseHTTPRequestHandler):
                         if im.format not in ('JPEG','PNG','WEBP') or im.width<1600 or im.height<1200 or im.width*im.height>24_000_000:
                             raise ValueError('Image must be JPEG/PNG/WebP, at least 1600 × 1200, max 24 megapixels')
                     private_write(IMAGES/(slug+'.bin'),binary)
+                generated_image = ensure_original_artwork(v)
                 private_write(DRAFTS/(slug+'.json'),json.dumps(v,ensure_ascii=False).encode())
-                return self.send(200,{'ok':True,'has_image':(IMAGES/(slug+'.bin')).exists()})
+                return self.send(200,{'ok':True,'generated_image':generated_image,'has_image':(IMAGES/(slug+'.bin')).exists()})
+            if path=='/api/regenerate-artwork':
+                slug=v.get('slug','')
+                if not safe_slug(slug):raise ValueError('Invalid slug')
+                draft_path=DRAFTS/(slug+'.json')
+                if not draft_path.is_file():raise ValueError('Save the draft before regenerating its artwork')
+                d=json.loads(draft_path.read_text('utf-8'))
+                d['artwork_variant']=secrets.token_hex(8)
+                private_write(IMAGES/(slug+'.bin'),generate_original_artwork(d))
+                return self.send(200,{'ok':True,'has_image':True})
             if path=='/api/unpublish':
                 return self.send(200,unpublish_slug(v.get('slug','')))
             if path=='/api/publish':
