@@ -7,6 +7,21 @@
   "language": "en",
   "items": [
     {
+      "id": "https://www.digibytewallet.org/news/faa-national-ground-stop-air-traffic-control-communications-november-2026.html",
+      "url": "https://www.digibytewallet.org/news/faa-national-ground-stop-air-traffic-control-communications-november-2026.html",
+      "title": "FAA Orders Nationwide Ground Stop After Air Traffic Control Communications Failure",
+      "summary": "The FAA ordered a nationwide halt to departures on November 13, 2026, following communications problems at air traffic control centers.",
+      "date_published": "2026-11-13T22:09:08Z",
+      "tags": [
+        "FAA",
+        "airline ground stop",
+        "aviation",
+        "technology outage",
+        "air traffic control"
+      ],
+      "image": "https://www.digibytewallet.org/news/assets/faa-national-ground-stop-air-traffic-control-communications-november-2026-16x9.jpg"
+    },
+    {
       "id": "https://www.digibytewallet.org/news/digibyte-core-v9-26-7-small-follow-up-fixes-and-wallet-detail-improvements.html",
       "url": "https://www.digibytewallet.org/news/digibyte-core-v9-26-7-small-follow-up-fixes-and-wallet-detail-improvements.html",
       "title": "DigiByte Core v9.26.7: Small Follow‑up Fixes and Wallet Detail Improvements",
