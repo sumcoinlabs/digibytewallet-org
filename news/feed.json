@@ -7,6 +7,21 @@
   "language": "en",
   "items": [
     {
+      "id": "https://www.digibytewallet.org/news/microsoft-outlook-365-outage-november-2026-recovery.html",
+      "url": "https://www.digibytewallet.org/news/microsoft-outlook-365-outage-november-2026-recovery.html",
+      "title": "Microsoft Outlook Outage: What Failed, Why Email Was Delayed, and Recovery Status",
+      "summary": "A major Outlook and Microsoft 365 outage disrupted email worldwide on November 12-13, 2026. Microsoft says recovery is progressing.",
+      "date_published": "2026-11-13T22:09:13Z",
+      "tags": [
+        "Microsoft Outlook",
+        "Microsoft 365",
+        "Exchange Online",
+        "email outage",
+        "cloud services"
+      ],
+      "image": "https://www.digibytewallet.org/news/assets/microsoft-outlook-365-outage-november-2026-recovery-16x9.jpg"
+    },
+    {
       "id": "https://www.digibytewallet.org/news/faa-national-ground-stop-air-traffic-control-communications-november-2026.html",
       "url": "https://www.digibytewallet.org/news/faa-national-ground-stop-air-traffic-control-communications-november-2026.html",
       "title": "FAA Orders Nationwide Ground Stop After Air Traffic Control Communications Failure",
