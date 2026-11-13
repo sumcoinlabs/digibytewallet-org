@@ -144,6 +144,7 @@ def parse_manuscript(raw):
     meta['published'] = date.isoformat(timespec='seconds').replace('+00:00', 'Z')
     meta['published_date'] = date.strftime('%Y-%m-%d')
     meta['published_human'] = f'{date.strftime("%B")} {date.day}, {date.year}'
+    meta['published_clock'] = date.strftime('%H:%M UTC')
     meta['tags_list'] = [x.strip() for x in meta.get('tags', 'DigiByte, DigiByte Wallet').split(',') if x.strip()][:8]
     return meta, body.strip()
 
@@ -166,7 +167,9 @@ def inline(text):
             out.append('<code>' + html.escape(match.group(4)) + '</code>')
         pos = match.end()
     out.append(html.escape(text[pos:], quote=True))
-    return ''.join(out)
+    result = ''.join(out)
+    # Emphasis is deliberately limited to simple single-asterisk passages.
+    return re.sub(r'(?<!\*)\*([^*\n<>]{2,300})\*(?!\*)', r'<em>\1</em>', result)
 
 
 def markdown(body):
@@ -185,6 +188,8 @@ def markdown(body):
         line = raw.strip()
         if not line:
             flush_para(); flush_list(); continue
+        if line == '---':
+            flush_para(); flush_list(); pieces.append('<hr class="dw-story-divider">'); continue
         m = re.match(r'^(#{2,3})\s+(.+)$', line)
         if m:
             flush_para(); flush_list()
@@ -250,11 +255,19 @@ def html_tags(meta, markup):
     side_m = re.search(r'<aside aria-label="Related information" class="dw-sidebar">(.*?)</aside>', template, re.S)
     if not side_m:
         fail('Existing related-information sidebar could not be reused')
-    sidebar = '<aside aria-label="Related information" class="dw-sidebar">' + side_m.group(1) + '</aside>'
+    sidebar_content = side_m.group(1).replace(
+        'The current app is available from Apple. Version 0.1.5 is coming soon; this link opens the current listing.',
+        'DigiByte Wallet 0.1.5 is available on the Apple App Store.')
+    sidebar = '<aside aria-label="Related information" class="dw-sidebar">' + sidebar_content + '</aside>'
     news_path = f'/news/{meta["slug"]}.html'
     heading = E(title)
     category = E(meta['category'])
     summary = E(meta['summary'])
+    # Keep the full editorial deck visible; trim only search/social snippets.
+    snippet = meta['summary'].strip()
+    if len(snippet) > 165:
+        snippet = snippet[:162].rsplit(' ',1)[0].rstrip(' ,;:') + '…'
+    seo_summary = E(snippet)
     image_url = E(meta['image'])
     image_alt = E(meta['image_alt'])
     share_url = E('https://twitter.com/intent/tweet?text=' + quote(title) + '&url=' + quote(canonical))
@@ -263,17 +276,17 @@ def html_tags(meta, markup):
     header = f'''<!doctype html>\n<html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{heading} | DigiByte Wallet News</title>
-<meta name="description" content="{summary}"><meta name="author" content="DigiByte Wallet">
+<meta name="description" content="{seo_summary}"><meta name="author" content="DigiByte Wallet">
 <meta name="robots" content="index,follow,max-image-preview:large"><meta name="google-adsense-account" content="{account}">
 <link rel="canonical" href="{E(canonical)}"><link rel="icon" type="image/x-icon" href="/favicon.ico">
 <link rel="alternate" type="application/rss+xml" title="DigiByte Wallet News RSS" href="{BASE}/news/feed.xml">
 <link rel="alternate" type="application/feed+json" title="DigiByte Wallet News JSON Feed" href="{BASE}/news/feed.json">
 <meta property="og:type" content="article"><meta property="og:site_name" content="DigiByte Wallet">
-<meta property="og:url" content="{E(canonical)}"><meta property="og:title" content="{heading}"><meta property="og:description" content="{summary}">
+<meta property="og:url" content="{E(canonical)}"><meta property="og:title" content="{heading}"><meta property="og:description" content="{seo_summary}">
 <meta property="og:image" content="{E(full_image)}"><meta property="og:image:alt" content="{image_alt}">
 <meta property="article:published_time" content="{meta['published']}"><meta property="article:modified_time" content="{meta['published']}">
 <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="{heading}">
-<meta name="twitter:description" content="{summary}"><meta name="twitter:image" content="{E(full_image)}">
+<meta name="twitter:description" content="{seo_summary}"><meta name="twitter:image" content="{E(full_image)}">
 <link rel="stylesheet" href="/css/base.css"><link rel="stylesheet" href="/css/main.css"><link rel="stylesheet" href="/news/assets/news.css">
 <script type="application/ld+json">{graph_json}</script>
 <script defer src="/news/assets/news.js"></script>
@@ -283,7 +296,7 @@ def html_tags(meta, markup):
     body_section = f'''<main id="main"><section class="dw-article-wrap"><div class="dw-shell dw-article-grid"><article class="dw-story">
 <nav aria-label="Breadcrumb" class="dw-breadcrumb"><a href="/">Home</a> / <a href="/news/">News</a> / {heading}</nav>
 <div class="dw-section-label">Published · {category}</div><h1>{heading}</h1>
-<p class="dw-story-meta"><time datetime="{meta['published']}">{meta['published_human']}</time> · DigiByte Wallet newsroom</p>
+<p class="dw-story-meta"><time datetime="{meta['published']}">{meta['published_human']} · {meta['published_clock']}</time> · DigiByte Wallet newsroom</p>
 <p class="dw-dek">{summary}</p><div class="dw-ad-target" data-ad-zone="inArticle"></div>
 {feature}\n{markup}\n<p class="dw-end"><strong>About DigiByte Wallet.</strong> For official updates, visit the <a href="/news/">DigiByte Wallet newsroom</a>. Send questions or corrections to <a href="/news/about.html">our editorial contact page</a>.</p>
 <div class="dw-share"><a href="{share_url}" rel="noopener noreferrer" target="_blank">Share on X</a><button data-copy-link="" type="button">Copy link</button></div></article>{sidebar}</div></section></main>'''
@@ -394,12 +407,12 @@ def update_sitemap(meta):
             ele = node.find(last)
             if ele is None:
                 ele = ET.SubElement(node, last)
-            ele.text = meta['published_date']
+            ele.text = meta['published']
     if not found_home:
         fail('Newsroom URL missing from existing main sitemap')
     e = ET.SubElement(root, tagurl)
     ET.SubElement(e, loc).text = url
-    ET.SubElement(e, last).text = meta['published_date']
+    ET.SubElement(e, last).text = meta['published']
     return ET.tostring(root, encoding='unicode', xml_declaration=True) + '\n'
 
 
@@ -456,6 +469,40 @@ def generator_refresh(source_root, installed=False):
         fail('Google News sitemap generator failed: '+(r.stdout+'\n'+r.stderr)[-2000:])
 
 
+def validate_discovery(meta, source_root):
+    """Check crawlable artifacts before publishing and after website deployment."""
+    loc = BASE + '/news/' + meta['slug'] + '.html'
+    sm = ET.parse(source_root/'sitemap.xml')
+    sm_rows = sm.findall('.//{%s}url' % SITEMAP_NS)
+    def main_entry(url):
+        return [row for row in sm_rows if row.findtext('{%s}loc'%SITEMAP_NS)==url]
+    article = main_entry(loc)
+    if len(article) != 1 or article[0].findtext('{%s}lastmod'%SITEMAP_NS) != meta['published']:
+        fail('Main sitemap missing accurate article lastmod')
+    index = main_entry(BASE+'/news/')
+    if len(index)!=1 or index[0].findtext('{%s}lastmod'%SITEMAP_NS) != meta['published']:
+        fail('Main sitemap missing updated newsroom lastmod')
+    ns={'s':SITEMAP_NS,'news':'http://www.google.com/schemas/sitemap-news/0.9'}
+    nm=ET.parse(source_root/'news-sitemap.xml')
+    recent=dt.datetime.now(dt.timezone.utc)-dt.datetime.fromisoformat(meta['published'].replace('Z','+00:00'))<=dt.timedelta(hours=48)
+    urls=nm.findall('.//s:url',ns)
+    entries=[row for row in urls if row.findtext('s:loc',namespaces=ns)==loc]
+    if recent:
+        if len(entries)!=1: fail('Google News sitemap missing new article')
+        if entries[0].findtext('news:news/news:publication_date',namespaces=ns) != meta['published']:
+            fail('Google News publication_date mismatch')
+        if entries[0].findtext('news:news/news:title',namespaces=ns) != meta['title']:
+            fail('Google News headline mismatch')
+    feed=json.loads((source_root/'news/feed.json').read_text('utf-8'))
+    if sum(x.get('url')==loc for x in feed.get('items',[]))!=1: fail('JSON news feed missing new URL')
+    rss=ET.parse(source_root/'news/feed.xml')
+    if sum(x.findtext('link')==loc for x in rss.findall('.//item'))!=1: fail('RSS missing new URL')
+    robots=(source_root/'robots.txt').read_text('utf-8')
+    for required in (BASE+'/sitemap.xml', BASE+'/news-sitemap.xml'):
+        if 'Sitemap: '+required not in robots: fail('robots.txt missing sitemap declaration')
+    return True
+
+
 def publish(raw):
     verify_repo()
     meta, body = parse_manuscript(raw)
@@ -510,6 +557,7 @@ def publish(raw):
         fail('Generated JSON feed has no entries')
     if not (ROOT/page_path).is_file() or f'/{page_path}' not in read('news/index.html'):
         fail('News homepage/article validation failed')
+    validate_discovery(meta,ROOT)
     # Explicit staging. No recursive website add; never anything from faucet/.
     git('add','--',*changed_paths)
     staged = git('diff','--cached','--name-only').splitlines()
@@ -528,7 +576,8 @@ def publish(raw):
     for p in (page_path,'news/feed.xml','news/feed.json','news/index.html','sitemap.xml'):
         atomic_bytes(live_destination(p),(ROOT/p).read_bytes())
     generator_refresh(LIVE, installed=True)
-    print('Production updated; sitemap refresh successful.')
+    validate_discovery(meta,LIVE)
+    print('PASS: live sitemap.xml + Google News sitemap + RSS + JSON feed verified; discoverable automatically.')
     print('Article: ' + BASE + '/' + page_path)
     print('RSS: ' + BASE + '/news/feed.xml')
     print('News sitemap: ' + BASE + '/news-sitemap.xml')

@@ -1,167 +1,106 @@
-"""Original topic-aware editorial art for DigiByte Wallet Newsroom Studio.
+"""Original abstract crypto editorial imagery, without headline text or copied assets.
 
-All artwork is generated locally with Pillow. No remote images, fonts, or APIs.
-Python 3.8+; used on the authenticated loopback editor only.
+Locally generated with Pillow; safe on the private newsroom editor's Python 3.8 venv.
 """
 import hashlib
 import io
 import math
+import random
 import re
-from pathlib import Path
-from PIL import Image, ImageDraw, ImageFont, ImageFilter
+from PIL import Image, ImageDraw, ImageFilter
 
 W, H = 1600, 1200
 THEMES = {
-    'digibyte': ('#081e42', '#2b94ee', '#61dae9'),
-    'bitcoin': ('#21192a', '#f1a43a', '#f9d98e'),
-    'ethereum': ('#211a40', '#9f90e7', '#9ddce9'),
-    'sumcoin': ('#0a2829', '#3ccbb8', '#d6c184'),
-    'crypto': ('#10253c', '#4ba3dc', '#84c9ce'),
+    'digibyte': ((6, 25, 55), (35, 137, 224), (105, 220, 239)),
+    'bitcoin': ((37, 23, 27), (235, 150, 50), (255, 214, 126)),
+    'ethereum': ((29, 27, 68), (137, 121, 225), (151, 213, 241)),
+    'sumcoin': ((5, 39, 42), (51, 179, 162), (190, 224, 173)),
+    'crypto': ((10, 33, 58), (54, 137, 196), (155, 207, 224)),
 }
-FONTS = [
-    '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf',
-    '/usr/share/fonts/truetype/liberation2/LiberationSans-Bold.ttf',
-    '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf',
-]
-
-def font(size, bold=True):
-    files = FONTS if bold else FONTS[::-1]
-    for name in files:
-        if Path(name).is_file():
-            try:
-                return ImageFont.truetype(name, size)
-            except OSError:
-                pass
-    return ImageFont.load_default()
 
 def topic_for(text):
-    text = text.lower()
-    for key in ('digibyte', 'bitcoin', 'ethereum', 'sumcoin'):
-        if key in text or (key == 'digibyte' and re.search(r'\bdgb\b', text)):
-            return key
+    t = str(text).lower()
+    for k in ('digibyte', 'bitcoin', 'ethereum', 'sumcoin'):
+        if k in t or (k == 'digibyte' and re.search(r'\bdgb\b', t)):
+            return k
     return 'crypto'
 
 def motif_for(text):
-    text = text.lower()
-    if re.search(r'\bcore\b|\bnode\b|\bnetwork\b|\bconsensus\b|\bblock\b', text):
-        return 'network'
-    if re.search(r'wallet|payment|transaction|address|send|receive', text):
-        return 'wallet'
-    if re.search(r'vulnerab|attack|breach|security|exploit|patch|audit', text):
-        return 'security'
-    if re.search(r'chain|protocol', text):
-        return 'network'
-    if re.search(r'price|market|rate|volume', text):
-        return 'markets'
+    t = str(text).lower()
+    if re.search(r'\bcore\b|\bnode\b|network|protocol|consensus|\bblock\b|chain', t): return 'network'
+    if re.search(r'wallet|address|payment|transaction|send|receive', t): return 'wallet'
+    if re.search(r'secur|breach|patch|attack|vulnerab|encrypt|audit', t): return 'security'
+    if re.search(r'price|market|rate|volume', t): return 'market'
     return 'release'
 
-def fit_headline(draw, title):
-    title = ' '.join(re.sub(r'[^\w\s.\-:+,/#()]', ' ', title).split())[:150]
-    if not title:
-        title = 'Crypto technology update'
-    for size in (70, 64, 58, 52, 46):
-        ff = font(size)
-        lines, current = [], ''
-        for word in title.split():
-            candidate = (current + ' ' + word).strip()
-            if current and draw.textbbox((0,0), candidate, font=ff)[2] > 720:
-                lines.append(current)
-                current = word
-            else:
-                current = candidate
-        if current:
-            lines.append(current)
-        if len(lines) <= 5:
-            return lines, ff, size
-    return lines[:5], ff, size
+def blend(x, y, p): return tuple(round(x[i]*(1-p)+y[i]*p) for i in range(3))
 
-def render(data):
-    title = str(data.get('title') or '')
-    body = str(data.get('body') or '')[:500]
-    category = str(data.get('category') or 'Technology update')[:40]
-    topic = topic_for(title + ' ' + category + ' ' + body[:160])
-    motif = motif_for(title + ' ' + body[:120])
-    dark, accent, soft = THEMES[topic]
-    seed = hashlib.sha256((title + '|' + category + '|' + str(data.get('artwork_variant',''))).encode()).digest()
-
-    # A simple, quick local composition: no remote resources or slow pixel loops.
-    im = Image.new('RGB', (W, H), dark)
-    d = ImageDraw.Draw(im)
-    for i in range(25):
-        x = 790 + i * 40
-        d.polygon([(x, 0), (x+410, 0), (x-140, H), (x-550, H)],
-                  fill=(18+i//4, 44+i//2, 83+i//3))
-    glow = Image.new('RGBA', (W, H), (0,0,0,0))
-    gd = ImageDraw.Draw(glow)
-    gd.ellipse((850, 190, 1560, 970), fill=tuple(bytes.fromhex(accent[1:])) + (92,))
-    glow = glow.filter(ImageFilter.GaussianBlur(115))
-    im = Image.alpha_composite(im.convert('RGBA'), glow)
-    d = ImageDraw.Draw(im, 'RGBA')
-    a = tuple(bytes.fromhex(accent[1:]))
-    s = tuple(bytes.fromhex(soft[1:]))
-    for x in range(130, W, 92):
-        d.line((x, 0, x, H), fill=(*s, 6), width=1)
-    for y in range(80, H, 92):
-        d.line((0, y, W, y), fill=(*s, 6), width=1)
-    d.rounded_rectangle((104, 124, 1496, 1070), radius=40,
-                        outline=(*s, 90), width=3)
-    d.rounded_rectangle((211, 218, 644, 274), radius=17,
-                        fill=(*a, 57), outline=(*a, 160), width=2)
-    d.text((232, 228), 'DIGIBYTE WALLET  /  NEWSROOM', font=font(19), fill=(238,249,255,250))
-    d.text((211, 323), category.upper(), font=font(29), fill=(*s, 245))
-    d.line((211, 377, 1000, 377), fill=(*a, 204), width=4)
-
-    headline, f, size = fit_headline(d, title)
-    y = 442
-    for line in headline:
-        d.text((208, y), line, font=f, fill=(244,250,254,255))
-        y += size + 27
-    d.text((211, 955), 'SOURCE-BASED REPORT   •   ORIGINAL EDITORIAL ARTWORK',
-           font=font(19,False), fill=(199,220,238,225))
-
-    # The subject motif changes with the article, while a uniform visual
-    # language keeps the newsroom brand recognizable.
-    cx, cy = 1231, 650
-    for rad in (294, 237, 176):
-        d.ellipse((cx-rad, cy-rad, cx+rad, cy+rad), outline=(*s, 91), width=3)
-    for k in range(18):
-        theta = 2*math.pi*k/18 + (seed[k%32]/255)
-        radius = 256 + seed[k%32]%60
-        x = int(cx + radius*math.cos(theta))
-        y = int(cy + radius*math.sin(theta))
-        d.ellipse((x-6,y-6,x+6,y+6),fill=(*a,242))
-    d.rounded_rectangle((1080, 507, 1385, 812), radius=56,
-                        fill=(9, 29, 54, 245), outline=(*a, 230), width=7)
-    if motif == 'network':
-        nodes = [(1147,600), (1320,588), (1230,662), (1154,742), (1320,742)]
-        for x,y in [(0,2),(1,2),(2,3),(2,4),(0,1),(3,4)]:
-            d.line(nodes[x]+nodes[y], fill=(*s,230), width=8)
-        for x,y in nodes:
-            d.ellipse((x-18,y-18,x+18,y+18),fill=(*a,245),outline=(255,255,255,240),width=4)
-    elif motif == 'wallet':
-        d.rounded_rectangle((1131,590,1335,743),radius=22,fill=(*a,120),outline=(*s,250),width=8)
-        d.rounded_rectangle((1226,639,1360,699),radius=18,fill=(9,29,54,255),outline=(*s,250),width=6)
-        d.ellipse((1250,657,1276,683),fill=(*a,250))
-    elif motif == 'security':
-        pts = [(1232,555),(1337,594),(1328,705),(1232,774),(1136,705),(1127,594)]
-        d.polygon(pts,fill=(*a,95))
-        d.line(pts+[pts[0]],fill=(*s,242),width=10,joint='curve')
-        d.line([(1186,667),(1218,699),(1284,622)],fill=(246,255,255,250),width=15,joint='curve')
-    elif motif == 'markets':
-        points=[(1131,746),(1194,686),(1249,714),(1300,615),(1356,566)]
-        d.line(points, fill=(*s,240), width=10, joint='curve')
-        for x,y in points:
-            d.ellipse((x-11,y-11,x+11,y+11),fill=(*a,255))
+def render(article):
+    title = str(article.get('title') or '')
+    content = title+' '+str(article.get('category') or '')+' '+str(article.get('body') or '')[:100]
+    topic = topic_for(content)
+    motif = motif_for(content)
+    bg, accent, ice = THEMES[topic]
+    seed = hashlib.sha256((title+'|'+str(article.get('artwork_variant',''))).encode()).digest()
+    rng = random.Random(int.from_bytes(seed[:8], 'big'))
+    im = Image.new('RGB', (W,H), bg)
+    dr = ImageDraw.Draw(im)
+    # Smooth cinematic background with no per-pixel Python loops.
+    for y in range(0,H,4):
+        p = .07+.16*(y/H)
+        dr.rectangle((0,y,W,y+4),fill=blend(bg, accent,p))
+    # Two slanted architectural planes provide depth, but no arbitrary grid text.
+    dr.polygon([(0,0),(540,0),(180,1200),(0,1200)],fill=blend(bg,accent,.10))
+    dr.polygon([(1070,0),(1600,0),(1600,1200),(570,1200)],fill=blend(bg,ice,.07))
+    layer = Image.new('RGBA',(W,H),(0,0,0,0)); glow=ImageDraw.Draw(layer,'RGBA')
+    glow.ellipse((410,40,1460,1150),fill=(*accent,105))
+    glow.ellipse((570,185,1290,990),fill=(*ice,45))
+    im=Image.alpha_composite(im.convert('RGBA'),layer.filter(ImageFilter.GaussianBlur(155)))
+    d=ImageDraw.Draw(im,'RGBA')
+    # A restrained network of quiet particles surrounds the primary editorial motif.
+    cx, cy=840+rng.randint(-40,40), 605+rng.randint(-30,30)
+    for radius in (230,315,405):
+        d.ellipse((cx-radius,cy-radius,cx+radius,cy+radius),outline=(*ice,30),width=2)
+    for _ in range(56):
+        t=rng.uniform(0,2*math.pi); r=rng.uniform(315,640)
+        x=round(cx+r*math.cos(t)); y=round(cy+r*math.sin(t))
+        if 28<x<W-28 and 28<y<H-28:
+            size=rng.randint(2,5)
+            d.ellipse((x-size,y-size,x+size,y+size),fill=(*ice,rng.randint(45,150)))
+    core=Image.new('RGBA',(W,H),(0,0,0,0)); c=ImageDraw.Draw(core,'RGBA')
+    c.ellipse((cx-270,cy-270,cx+270,cy+270),fill=(*bg,203),outline=(*ice,145),width=4)
+    c.ellipse((cx-238,cy-238,cx+238,cy+238),outline=(*accent,125),width=16)
+    if motif=='network':
+        nodes=[(cx-155,cy-105),(cx+136,cy-135),(cx-135,cy+150),(cx+156,cy+125),(cx,cy)]
+        for a,b in [(0,1),(0,2),(0,4),(1,3),(1,4),(2,3),(2,4),(3,4)]:
+            c.line((nodes[a],nodes[b]),fill=(*ice,133),width=12)
+        for i,(x,y) in enumerate(nodes):
+            rad=39 if i==4 else 23
+            c.ellipse((x-rad,y-rad,x+rad,y+rad),fill=(*accent,240),outline=(243,252,255,250),width=5)
+    elif motif=='wallet':
+        c.rounded_rectangle((cx-175,cy-125,cx+160,cy+125),radius=32,fill=(*accent,85),outline=(*ice,242),width=14)
+        c.rounded_rectangle((cx+20,cy-53,cx+192,cy+70),radius=26,fill=(*bg,250),outline=(*ice,245),width=9)
+        c.ellipse((cx+94,cy-9,cx+124,cy+21),fill=(*accent,250))
+    elif motif=='security':
+        polygon=[(cx,cy-190),(cx+170,cy-120),(cx+145,cy+89),(cx,cy+185),(cx-145,cy+89),(cx-170,cy-120)]
+        c.polygon(polygon,fill=(*accent,108));c.line(polygon+[polygon[0]],fill=(*ice,247),width=14,joint='curve')
+        c.line([(cx-75,cy+5),(cx-14,cy+68),(cx+100,cy-62)],fill=(246,255,255,250),width=19,joint='curve')
+    elif motif=='market':
+        pts=[(cx-174,cy+145),(cx-95,cy+72),(cx-20,cy+98),(cx+65,cy-20),(cx+166,cy-148)]
+        c.line(pts,fill=(*ice,234),width=18,joint='curve')
+        for x,y in pts:c.ellipse((x-14,y-14,x+14,y+14),fill=(*accent,245),outline=(245,255,255,245),width=3)
     else:
-        for k in range(4):
-            y=554+54*k
-            d.rounded_rectangle((1133,y,1338,y+42),radius=8,
-                                fill=(*a,35+k*17),outline=(*s,170),width=3)
-            d.ellipse((1151,y+13,1167,y+29),fill=(*a,250))
-            d.line((1190,y+21,1300,y+21),fill=(244,250,255,222),width=5)
-    d.rounded_rectangle((1114,849,1353,910),radius=18,
-                        fill=(*a,48),outline=(*s,130),width=2)
-    d.text((1136,862),motif.upper(),font=font(24),fill=(244,252,255,248))
-    out = io.BytesIO()
-    im.convert('RGB').save(out, format='PNG', optimize=True)
-    return out.getvalue()
+        for i in range(4):
+            y=cy-141+i*85
+            c.rounded_rectangle((cx-152,y,cx+152,y+55),radius=14,fill=(*accent,55+i*24),outline=(*ice,194),width=4)
+            c.ellipse((cx-125,y+21,cx-111,y+35),fill=(*ice,250))
+            c.line((cx-70,y+27,cx+116,y+27),fill=(241,251,255,205),width=6)
+    # Fine gold/blue accents introduce material depth, rather than copied logos or headlines.
+    im=Image.alpha_composite(im,core.filter(ImageFilter.GaussianBlur(1.2)))
+    d=ImageDraw.Draw(im,'RGBA')
+    for i in range(3):
+        d.arc((cx-470+i*22,cy-470+i*22,cx+470-i*22,cy+470-i*22),
+              210+i*19,302+i*19,fill=(*ice,75),width=4)
+    output=io.BytesIO()
+    im.convert('RGB').save(output,format='PNG',optimize=True)
+    return output.getvalue()
