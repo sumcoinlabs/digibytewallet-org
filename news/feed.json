@@ -7,6 +7,19 @@
   "language": "en",
   "items": [
     {
+      "id": "https://www.digibytewallet.org/news/digibyte-core-v9-26-7-small-follow-up-fixes-and-wallet-detail-improvements.html",
+      "url": "https://www.digibytewallet.org/news/digibyte-core-v9-26-7-small-follow-up-fixes-and-wallet-detail-improvements.html",
+      "title": "DigiByte Core v9.26.7: Small Follow‑up Fixes and Wallet Detail Improvements",
+      "summary": "The DigiByte Core v9.26.7 release, published on 6 Oct 2026, addresses slow chain‑information requests, a shutdown fatal‑error, and refines three wallet UI details. It adds five user‑facing changes and ten total fixes without altering block‑validation rules or Thaw Day activation heights.",
+      "date_published": "2026-11-13T00:51:00Z",
+      "tags": [
+        "DigiByte",
+        "DGB",
+        "DigiByte Wallet"
+      ],
+      "image": "https://www.digibytewallet.org/news/assets/digibyte-core-v9-26-7-small-follow-up-fixes-and-wallet-detail-improvements-16x9.jpg"
+    },
+    {
       "id": "https://www.digibytewallet.org/news/digibyte-wallet-0-1-5-now-available.html",
       "url": "https://www.digibytewallet.org/news/digibyte-wallet-0-1-5-now-available.html",
       "title": "DigiByte Wallet 0.1.5 is now available on the App Store",
