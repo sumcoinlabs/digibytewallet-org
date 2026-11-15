@@ -4099,3 +4099,36 @@ html.no-csstransitions .home-content__main {
 }
 
 /*# sourceMappingURL=main.css.map */
+
+/* Direct Android APK badge: same 232x72 geometry as the App Store badge. */
+.s-download .download-badges li a.badge-android-apk {
+  background-image: url("../images/android-apk-badge.svg");
+}
+.s-download .download-badges li a:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 4px;
+  border-radius: 9px;
+}
+.s-download .android-apk-note {
+  max-width: 760px;
+  margin: 1.8rem auto 0;
+  padding: 0 1rem;
+  color: #fff;
+  font-size: 1.45rem;
+  line-height: 1.65;
+  text-align: center;
+}
+.s-download .android-apk-checksum {
+  max-width: 760px;
+  margin: 0.6rem auto 0;
+  color: #fff;
+  font-size: 1.2rem;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+.s-download .android-apk-checksum code {
+  background: rgba(0,0,0,0.18);
+  color: #fff;
+  padding: 0.2rem 0.35rem;
+  overflow-wrap: anywhere;
+}
