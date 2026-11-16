@@ -17,7 +17,7 @@ import xml.etree.ElementTree as ET
 
 ROOT = Path(os.environ.get('DGB_NEWS_ROOT', '/var/www/digibytewallet-org')).resolve()
 NEWS = ROOT / 'news'
-BASE = 'https://www.digibytewallet.org'
+BASE = 'https://digibytewallet.org'
 SITEMAP = ROOT / 'news-sitemap.xml'
 ABOUT = NEWS / 'about.html'
 INDEX = NEWS / 'index.html'
@@ -356,7 +356,7 @@ def check_public():
                 elif expected == 'regular_xml':
                     okay = b'<urlset' in b or b'<sitemapindex' in b or b':urlset' in b or b':sitemapindex' in b
                 elif expected == 'robots':
-                    okay = b'Sitemap: https://www.digibytewallet.org/news-sitemap.xml' in b
+                    okay = b'Sitemap: https://digibytewallet.org/news-sitemap.xml' in b
                 else:
                     okay = b'<html' in b.lower() and (relative != '/news/about.html' or b'Editorial' in b)
                 if 'noindex' in (r.headers.get('X-Robots-Tag') or '').lower():

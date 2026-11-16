@@ -23,7 +23,7 @@ from urllib.parse import quote
 
 ROOT = Path(os.environ.get('DGB_NEWS_REPO', '/root/digibytewallet-org-github')).resolve()
 LIVE = Path(os.environ.get('DGB_NEWS_LIVE', '/var/www/digibytewallet-org')).resolve()
-BASE = 'https://www.digibytewallet.org'
+BASE = 'https://digibytewallet.org'
 SITEMAP_NS = 'http://www.sitemaps.org/schemas/sitemap/0.9'
 ET.register_namespace('', SITEMAP_NS)
 MARKER = 'DGB_NEWS_PUBLISHER_V1'

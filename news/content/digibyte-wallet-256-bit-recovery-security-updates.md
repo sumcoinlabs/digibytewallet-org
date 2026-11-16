@@ -33,7 +33,7 @@ According to the [wallet's development changelog](https://github.com/sumcoinlabs
 
 The preceding 0.1.4 development notes describe Electrum connection improvements, more consistent light and dark layouts, a balance-privacy toggle, a revised Send screen, and clearer price information. For someone using DGB day to day, connection reliability, readable transactions, and the ability to hide an on-screen balance are practical improvements—not just release-note filler.
 
-**Release status matters:** these items describe the open-source development and release-preparation work. They should not be confused with a claim that the complete 0.1.5 update is already available to every App Store or Android user. Check the [official wallet website](https://www.digibytewallet.org/) and your app store for the version currently offered to your device.
+**Release status matters:** these items describe the open-source development and release-preparation work. They should not be confused with a claim that the complete 0.1.5 update is already available to every App Store or Android user. Check the [official wallet website](https://digibytewallet.org/) and your app store for the version currently offered to your device.
 
 ## A more dependable foundation for DigiByte development
 
@@ -43,6 +43,6 @@ For DGB, the larger point is utility. People are more likely to explore a digita
 
 ## What DGB holders should do now
 
-Keep recovery words **offline and private**. Do not photograph them, place them in cloud notes, or enter them into a website that claims to be support. Verify the wallet version before updating, obtain software from the [official wallet website](https://www.digibytewallet.org/), and follow the [public development repository](https://github.com/sumcoinlabs/digibyte_flutter) for actual changes. No legitimate announcement about 256-bit entropy requires an existing holder to share a recovery phrase.
+Keep recovery words **offline and private**. Do not photograph them, place them in cloud notes, or enter them into a website that claims to be support. Verify the wallet version before updating, obtain software from the [official wallet website](https://digibytewallet.org/), and follow the [public development repository](https://github.com/sumcoinlabs/digibyte_flutter) for actual changes. No legitimate announcement about 256-bit entropy requires an existing holder to share a recovery phrase.
 
 Follow further development and release announcements in the [DigiByte Wallet newsroom](/news/) or subscribe to its [RSS feed](/news/feed.xml). The most useful security stories are the ones readers can verify in code and apply to their own wallet habits.

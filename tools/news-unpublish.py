@@ -18,7 +18,7 @@ import sys
 import xml.etree.ElementTree as ET
 
 SLUG = re.compile(r'^[a-z0-9]+(?:-[a-z0-9]+)*$')
-BASE = 'https://www.digibytewallet.org/news/'
+BASE = 'https://digibytewallet.org/news/'
 NS = 'http://www.sitemaps.org/schemas/sitemap/0.9'
 
 
@@ -90,7 +90,7 @@ def prepare(slug, mod):
         next_url=feeds['items'][0]['url']
         if not isinstance(next_url,str) or not next_url.startswith(BASE):raise RuntimeError('Invalid replacement target')
         index=re.sub(r'(<div class="dw-hero-links"><a class="dw-btn dw-btn-primary" href=")[^"]+("[^>]*>Read the latest news</a>)',
-                     lambda m:m.group(1)+next_url[len('https://www.digibytewallet.org'):]+m.group(2),index,count=1)
+                     lambda m:m.group(1)+next_url[len('https://digibytewallet.org'):]+m.group(2),index,count=1)
     # A retired story may also have a secondary hero or related link. Remove
     # that stale navigation rather than leaving a visible link to a 404.
     stale_link=re.compile(r'<a\b[^>]*href="/news/'+re.escape(slug)+r'\.html"[^>]*>.*?</a>',re.S|re.I)

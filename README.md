@@ -1,6 +1,6 @@
 # DigiByte Wallet website
 
-Public website source for [digibytewallet.org](https://www.digibytewallet.org/).
+Public website source for [digibytewallet.org](https://digibytewallet.org/).
 
 This repository initially tracks only approved static files from the production
 webroot: homepage, CSS, JavaScript, images, news, privacy, donate, robots.txt,
@@ -31,6 +31,6 @@ explorer, and wallet directories remain outside this Git repository. New article
 must have canonical URLs and original publication dates; the generator reads
 published HTML metadata rather than applying a new timestamp to old articles.
 
-Google Search Console: submit `https://www.digibytewallet.org/news-sitemap.xml`
+Google Search Console: submit `https://digibytewallet.org/news-sitemap.xml`
 separately from the existing `sitemap.xml`. Inclusion in Google News is not
 promised or controlled by this repository.

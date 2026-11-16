@@ -1,6 +1,6 @@
 User-agent: *
 Disallow:
 
-Sitemap: https://www.digibytewallet.org/sitemap.xml
+Sitemap: https://digibytewallet.org/sitemap.xml
 
-Sitemap: https://www.digibytewallet.org/news-sitemap.xml
+Sitemap: https://digibytewallet.org/news-sitemap.xml

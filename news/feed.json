@@ -1,14 +1,14 @@
 {
   "version": "https://jsonfeed.org/version/1.1",
   "title": "DigiByte Wallet News",
-  "home_page_url": "https://www.digibytewallet.org/news/",
-  "feed_url": "https://www.digibytewallet.org/news/feed.json",
+  "home_page_url": "https://digibytewallet.org/news/",
+  "feed_url": "https://digibytewallet.org/news/feed.json",
   "description": "DigiByte Wallet releases and development news",
   "language": "en",
   "items": [
     {
-      "id": "https://www.digibytewallet.org/news/spacex-starship-flight-15-double-catch-launch-preview-november-2026.html",
-      "url": "https://www.digibytewallet.org/news/spacex-starship-flight-15-double-catch-launch-preview-november-2026.html",
+      "id": "https://digibytewallet.org/news/spacex-starship-flight-15-double-catch-launch-preview-november-2026.html",
+      "url": "https://digibytewallet.org/news/spacex-starship-flight-15-double-catch-launch-preview-november-2026.html",
       "title": "SpaceX Starship Flight 15: Launch Window, Double-Catch Plan, and Why It Matters",
       "summary": "SpaceX targets November 13, 2026 for Starship Flight 15, aiming to recover its booster and attempt the first catch of an upper stage.",
       "date_published": "2026-11-13T22:09:18Z",
@@ -20,11 +20,11 @@
         "reusable rockets",
         "space launch"
       ],
-      "image": "https://www.digibytewallet.org/news/assets/spacex-starship-flight-15-double-catch-launch-preview-november-2026-16x9.jpg"
+      "image": "https://digibytewallet.org/news/assets/spacex-starship-flight-15-double-catch-launch-preview-november-2026-16x9.jpg"
     },
     {
-      "id": "https://www.digibytewallet.org/news/microsoft-outlook-365-outage-november-2026-recovery.html",
-      "url": "https://www.digibytewallet.org/news/microsoft-outlook-365-outage-november-2026-recovery.html",
+      "id": "https://digibytewallet.org/news/microsoft-outlook-365-outage-november-2026-recovery.html",
+      "url": "https://digibytewallet.org/news/microsoft-outlook-365-outage-november-2026-recovery.html",
       "title": "Microsoft Outlook Outage: What Failed, Why Email Was Delayed, and Recovery Status",
       "summary": "A major Outlook and Microsoft 365 outage disrupted email worldwide on November 12-13, 2026. Microsoft says recovery is progressing.",
       "date_published": "2026-11-13T22:09:13Z",
@@ -35,11 +35,11 @@
         "email outage",
         "cloud services"
       ],
-      "image": "https://www.digibytewallet.org/news/assets/microsoft-outlook-365-outage-november-2026-recovery-16x9.jpg"
+      "image": "https://digibytewallet.org/news/assets/microsoft-outlook-365-outage-november-2026-recovery-16x9.jpg"
     },
     {
-      "id": "https://www.digibytewallet.org/news/faa-national-ground-stop-air-traffic-control-communications-november-2026.html",
-      "url": "https://www.digibytewallet.org/news/faa-national-ground-stop-air-traffic-control-communications-november-2026.html",
+      "id": "https://digibytewallet.org/news/faa-national-ground-stop-air-traffic-control-communications-november-2026.html",
+      "url": "https://digibytewallet.org/news/faa-national-ground-stop-air-traffic-control-communications-november-2026.html",
       "title": "FAA Orders Nationwide Ground Stop After Air Traffic Control Communications Failure",
       "summary": "The FAA ordered a nationwide halt to departures on November 13, 2026, following communications problems at air traffic control centers.",
       "date_published": "2026-11-13T22:09:08Z",
@@ -50,11 +50,11 @@
         "technology outage",
         "air traffic control"
       ],
-      "image": "https://www.digibytewallet.org/news/assets/faa-national-ground-stop-air-traffic-control-communications-november-2026-16x9.jpg"
+      "image": "https://digibytewallet.org/news/assets/faa-national-ground-stop-air-traffic-control-communications-november-2026-16x9.jpg"
     },
     {
-      "id": "https://www.digibytewallet.org/news/digibyte-core-v9-26-7-small-follow-up-fixes-and-wallet-detail-improvements.html",
-      "url": "https://www.digibytewallet.org/news/digibyte-core-v9-26-7-small-follow-up-fixes-and-wallet-detail-improvements.html",
+      "id": "https://digibytewallet.org/news/digibyte-core-v9-26-7-small-follow-up-fixes-and-wallet-detail-improvements.html",
+      "url": "https://digibytewallet.org/news/digibyte-core-v9-26-7-small-follow-up-fixes-and-wallet-detail-improvements.html",
       "title": "DigiByte Core v9.26.7: Small Follow‑up Fixes and Wallet Detail Improvements",
       "summary": "The DigiByte Core v9.26.7 release, published on 6 Oct 2026, addresses slow chain‑information requests, a shutdown fatal‑error, and refines three wallet UI details. It adds five user‑facing changes and ten total fixes without altering block‑validation rules or Thaw Day activation heights.",
       "date_published": "2026-11-13T00:51:00Z",
@@ -63,11 +63,11 @@
         "DGB",
         "DigiByte Wallet"
       ],
-      "image": "https://www.digibytewallet.org/news/assets/digibyte-core-v9-26-7-small-follow-up-fixes-and-wallet-detail-improvements-16x9.jpg"
+      "image": "https://digibytewallet.org/news/assets/digibyte-core-v9-26-7-small-follow-up-fixes-and-wallet-detail-improvements-16x9.jpg"
     },
     {
-      "id": "https://www.digibytewallet.org/news/digibyte-wallet-0-1-5-now-available.html",
-      "url": "https://www.digibytewallet.org/news/digibyte-wallet-0-1-5-now-available.html",
+      "id": "https://digibytewallet.org/news/digibyte-wallet-0-1-5-now-available.html",
+      "url": "https://digibytewallet.org/news/digibyte-wallet-0-1-5-now-available.html",
       "title": "DigiByte Wallet 0.1.5 is now available on the App Store",
       "summary": "DigiByte Wallet 0.1.5 is now listed on Apple's App Store, bringing security dependency updates, improved iPhone startup reliability, Send All fixes, and clearer controls.",
       "date_published": "2026-11-12T21:22:08Z",
@@ -78,11 +78,11 @@
         "iOS",
         "Release"
       ],
-      "image": "https://www.digibytewallet.org/news/assets/newsroom-social-v33.jpg"
+      "image": "https://digibytewallet.org/news/assets/newsroom-social-v33.jpg"
     },
     {
-      "id": "https://www.digibytewallet.org/news/digibyte-wallet-256-bit-recovery-security-updates.html",
-      "url": "https://www.digibytewallet.org/news/digibyte-wallet-256-bit-recovery-security-updates.html",
+      "id": "https://digibytewallet.org/news/digibyte-wallet-256-bit-recovery-security-updates.html",
+      "url": "https://digibytewallet.org/news/digibyte-wallet-256-bit-recovery-security-updates.html",
       "title": "DigiByte Wallet Highlights 256-Bit Recovery as 0.1.5 Security Work Advances",
       "summary": "DigiByte Wallet's new-wallet setup uses 256-bit BIP39 entropy and a 24-word recovery phrase. Recent development work also strengthens iOS Keychain reliability, certificate validation, and app usability ahead of version 0.1.5.",
       "date_published": "2026-11-06T02:03:29Z",
@@ -95,11 +95,11 @@
         "BIP39",
         "DigiByte Wallet"
       ],
-      "image": "https://www.digibytewallet.org/news/assets/newsroom-social-v33.jpg"
+      "image": "https://digibytewallet.org/news/assets/newsroom-social-v33.jpg"
     },
     {
-      "id": "https://www.digibytewallet.org/news/digicoinlib-0-0-3-release.html",
-      "url": "https://www.digibytewallet.org/news/digicoinlib-0-0-3-release.html",
+      "id": "https://digibytewallet.org/news/digicoinlib-0-0-3-release.html",
+      "url": "https://digibytewallet.org/news/digicoinlib-0-0-3-release.html",
       "title": "DigiCoinLib 0.0.3: A stronger foundation for DigiByte Wallet",
       "summary": "A new open-source DigiByte library update improves compatibility with modern Android tooling, corrects test-network handling and strengthens automated tests while preserving standard mainnet wallet behavior.",
       "date_published": "2026-11-05T00:00:00Z",
@@ -108,11 +108,11 @@
         "DigiByte Wallet",
         "Open-source release"
       ],
-      "image": "https://www.digibytewallet.org/news/assets/digicoinlib-0-0-3-social-v33.jpg"
+      "image": "https://digibytewallet.org/news/assets/digicoinlib-0-0-3-social-v33.jpg"
     },
     {
-      "id": "https://www.digibytewallet.org/news/wallet-0-1-5-preview.html",
-      "url": "https://www.digibytewallet.org/news/wallet-0-1-5-preview.html",
+      "id": "https://digibytewallet.org/news/wallet-0-1-5-preview.html",
+      "url": "https://digibytewallet.org/news/wallet-0-1-5-preview.html",
       "title": "DigiByte Wallet 0.1.5: Original preview (November 5)",
       "summary": "Archived November 5 development preview: DigiByte Wallet 0.1.5 has since been released on the App Store. Read the newer release announcement for current availability.",
       "date_published": "2026-11-05T00:00:00Z",
@@ -121,7 +121,7 @@
         "DigiByte Wallet",
         "Wallet preview"
       ],
-      "image": "https://www.digibytewallet.org/news/assets/wallet-0-1-5-social-v33.jpg"
+      "image": "https://digibytewallet.org/news/assets/wallet-0-1-5-social-v33.jpg"
     }
   ]
 }

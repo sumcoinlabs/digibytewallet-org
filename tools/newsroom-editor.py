@@ -287,7 +287,7 @@ def publish_slug(slug):
         (DRAFTS/(slug+'.json')).unlink()
         original = IMAGES/(slug+'.bin')
         if original.exists(): original.unlink()
-        return {'url':'https://www.digibytewallet.org/news/'+slug+'.html', 'images':list(images)}
+        return {'url':'https://digibytewallet.org/news/'+slug+'.html', 'images':list(images)}
     finally:
         PUBLISH_LOCK.release()
 
@@ -316,7 +316,7 @@ def publication_control_v06():
     output=[]
     for x in items[:80]:
         url=x.get('url','')
-        prefix='https://www.digibytewallet.org/news/'
+        prefix='https://digibytewallet.org/news/'
         if not isinstance(url,str) or not url.startswith(prefix) or not url.endswith('.html'):continue
         slug=url[len(prefix):-5]
         if not safe_slug(slug):continue
