@@ -4109,26 +4109,53 @@ html.no-csstransitions .home-content__main {
   outline-offset: 4px;
   border-radius: 9px;
 }
-.s-download .android-apk-note {
-  max-width: 760px;
-  margin: 1.8rem auto 0;
-  padding: 0 1rem;
+.s-download .android-apk-guide {
+  box-sizing: border-box;
+  max-width: 720px;
+  margin: 2.4rem auto 0;
+  padding: 2rem 2.4rem;
+  border: 1px solid rgba(255,255,255,.25);
+  border-radius: 12px;
+  background: rgba(9,30,60,.23);
   color: #fff;
-  font-size: 1.45rem;
-  line-height: 1.65;
-  text-align: center;
+  text-align: left;
 }
-.s-download .android-apk-checksum {
-  max-width: 760px;
-  margin: 0.6rem auto 0;
+.s-download .android-apk-guide h3 {
   color: #fff;
-  font-size: 1.2rem;
-  text-align: center;
-  overflow-wrap: anywhere;
+  margin: 0 0 1rem;
+  font-size: 2rem;
 }
-.s-download .android-apk-checksum code {
-  background: rgba(0,0,0,0.18);
+.s-download .android-apk-guide p {
+  margin: 0 0 1rem;
   color: #fff;
-  padding: 0.2rem 0.35rem;
+  font-size: 1.5rem;
+  line-height: 1.55;
+}
+.s-download .android-apk-guide .android-apk-source {
+  opacity: .82;
+  font-size: 1.3rem;
+}
+.s-download .android-apk-integrity {
+  border-top: 1px solid rgba(255,255,255,.25);
+  padding-top: 1.1rem;
+}
+.s-download .android-apk-integrity summary {
+  cursor: pointer;
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+.s-download .android-apk-integrity code {
+  display: block;
+  margin-top: 1rem;
+  color: #fff;
+  font-size: 1.25rem;
+  line-height: 1.5;
   overflow-wrap: anywhere;
+  user-select: all;
+}
+@media only screen and (max-width: 600px) {
+  .s-download .android-apk-guide {
+    margin-top: 1.6rem;
+    padding: 1.6rem;
+  }
 }
