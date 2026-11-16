@@ -1,0 +1,1 @@
+* * * * * root /usr/bin/flock -n /run/digibyte-apk-download-count.lock /usr/bin/python3 /usr/local/bin/digibyte-apk-download-count.py >/dev/null 2>&1

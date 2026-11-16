@@ -70,3 +70,6 @@
 !/tools/news-unpublish.py
 !/tools/install-newsroom-editor.sh
 !/tools/NEWSROOM_EDITOR.md
+
+!/tools/digibyte-apk-download-count.py
+!/ops/digibyte-apk-download-count.cron
