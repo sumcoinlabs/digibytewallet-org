@@ -4148,6 +4148,10 @@ html.no-csstransitions .home-content__main {
   display: block;
   margin-top: 1rem;
   color: #fff;
+  background: #102c55;
+  border: 1px solid rgba(255,255,255,.3);
+  padding: .9rem 1rem;
+  white-space: normal;
   font-size: 1.25rem;
   line-height: 1.5;
   overflow-wrap: anywhere;
